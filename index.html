@@ -4,328 +4,204 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TownLoop Design Preview</title>
-<meta name="description" content="TownLoop design previews for the Sime Darby Property University Hackathon 2026.">
+<meta name="description" content="TownLoop design preview for the Sime Darby Property University Hackathon 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@500;600;700&family=Funnel+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1a1a1a;
-    --muted: #6b6b68;
-    --line: #e6e5e1;
-    --paper: #ffffff;
-    --soft: #f6f6f4;
-    --accent: #f26b2e;
-    --radius: 18px;
-    --max: 1160px;
+    --mute: #8a8a86;
+    --line: #e8e7e3;
+    --grey: #f5f5f3;
+    --stage: #eeeeec;
+    --orange: #f26b2e;
+    --max: 1320px;
+    --gut: clamp(16px, 4vw, 48px);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: var(--ink);
-    background: var(--paper);
-    line-height: 1.55;
+    font-family: "Funnel Sans", system-ui, sans-serif;
+    color: var(--ink); background: #fff;
     -webkit-font-smoothing: antialiased;
   }
-  img { display: block; max-width: 100%; height: auto; }
-  a { color: inherit; }
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  img { display: block; width: 100%; height: auto; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+  .zoom { cursor: zoom-in; }
 
-  /* Nav */
-  nav {
-    position: sticky; top: 0; z-index: 20;
-    background: rgba(255,255,255,.88);
-    backdrop-filter: saturate(180%) blur(12px);
-    -webkit-backdrop-filter: saturate(180%) blur(12px);
-    border-bottom: 1px solid var(--line);
-  }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 19px; text-decoration: none; letter-spacing: -.01em; }
-  .logo svg { width: 30px; height: 18px; }
-  .links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
-  .links a { text-decoration: none; transition: color .15s; }
-  .links a:hover { color: var(--ink); }
-  .tag {
-    font-size: 12px; font-weight: 500; padding: 6px 12px;
-    border: 1px solid var(--line); border-radius: 999px; color: var(--muted);
-  }
+  /* Top */
+  .top { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+  .mark { display: flex; align-items: center; gap: 12px; font-family: "Funnel Display", sans-serif; font-weight: 600; font-size: 24px; letter-spacing: -.02em; }
+  .mark svg { width: 38px; height: 24px; }
+  .top nav { display: flex; gap: 32px; font-size: 15px; color: var(--mute); }
+  .top nav a:hover { color: var(--ink); }
 
   /* Hero */
-  .hero { padding: 88px 0 56px; }
-  .eyebrow { font-size: 14px; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-  .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-  h1 { font-size: clamp(40px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -.035em; font-weight: 600; max-width: 14ch; }
-  .lead { font-size: clamp(17px, 1.6vw, 20px); color: #3d3d3a; max-width: 58ch; margin-top: 24px; }
-  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
-  .chip { font-size: 13px; padding: 8px 14px; border-radius: 999px; background: var(--soft); color: #3d3d3a; }
-
-  .overview {
-    margin-top: 8px; background: #eeeeec; border-radius: var(--radius);
-    padding: clamp(10px, 2vw, 22px); overflow: hidden;
+  .hero { padding: clamp(56px, 10vw, 128px) 0 clamp(40px, 6vw, 72px); }
+  h1 {
+    font-family: "Funnel Display", sans-serif; font-weight: 600;
+    font-size: clamp(44px, 8.4vw, 124px); line-height: .96; letter-spacing: -.045em;
   }
-  .overview img { border-radius: 10px; cursor: zoom-in; }
+  h1 em { font-style: normal; color: var(--orange); }
 
-  /* Sections */
-  section { padding: 96px 0 0; }
-  .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 40px; flex-wrap: wrap; }
-  .num { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
-  h2 { font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; letter-spacing: -.025em; font-weight: 600; }
-  .head p { color: var(--muted); max-width: 44ch; font-size: 16px; }
+  .stage { background: var(--stage); }
+  .stage .wrap { padding-top: clamp(16px, 3vw, 40px); padding-bottom: clamp(16px, 3vw, 40px); }
 
-  /* Steps */
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--line); }
-  .step { padding: 28px 24px 0 0; }
-  .step + .step { padding-left: 24px; border-left: 1px solid var(--line); }
-  .step b { display: block; font-size: 13px; color: var(--accent); margin-bottom: 14px; }
-  .step h3 { font-size: 19px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 8px; }
-  .step p { color: var(--muted); font-size: 15px; }
-
-  /* Phones */
-  .phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 28px; }
-  .phone figure { margin: 0; }
-  .frame {
-    background: var(--soft); border-radius: var(--radius);
-    padding: 28px 28px 0; overflow: hidden; display: flex; justify-content: center;
+  /* Section head */
+  section { padding-top: clamp(80px, 11vw, 152px); }
+  .label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1.5px solid var(--ink); padding-top: 18px; margin-bottom: clamp(28px, 4vw, 48px);
   }
-  .frame img {
-    width: 100%; max-width: 280px;
-    border-radius: 26px 26px 0 0;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.06), 0 18px 40px -16px rgba(0,0,0,.18);
-    cursor: zoom-in; transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  .label h2 { font-family: "Funnel Display", sans-serif; font-weight: 600; font-size: clamp(30px, 4vw, 52px); letter-spacing: -.03em; line-height: 1; }
+  .label span { font-size: 15px; color: var(--mute); }
+
+  /* App strip */
+  .strip {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr);
+    gap: clamp(12px, 1.6vw, 20px); overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-bottom: 8px; scrollbar-width: none;
   }
-  .phone:hover .frame img { transform: translateY(-6px); }
-  figcaption { padding-top: 16px; }
-  figcaption strong { display: block; font-size: 16px; font-weight: 600; }
-  figcaption span { color: var(--muted); font-size: 14px; }
+  .strip::-webkit-scrollbar { display: none; }
+  @media (min-width: 1200px) { .strip { grid-auto-columns: 1fr; overflow: visible; } }
+  .screen { scroll-snap-align: start; }
+  .screen .shot { background: var(--grey); border-radius: 20px; padding: 18px 18px 0; overflow: hidden; }
+  .screen img { border-radius: 14px 14px 0 0; box-shadow: 0 0 0 1px rgba(0,0,0,.05); transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+  .screen:hover img { transform: translateY(-6px); }
+  .screen p { font-size: 15px; margin-top: 14px; }
 
-  /* Website */
-  .sites { display: grid; grid-template-columns: 1fr 300px; gap: 28px; align-items: start; }
-  .browser {
-    border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper);
-    box-shadow: 0 24px 60px -30px rgba(0,0,0,.25);
-  }
-  .bar { height: 38px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: var(--soft); border-bottom: 1px solid var(--line); }
-  .bar i { width: 10px; height: 10px; border-radius: 50%; background: #d9d8d4; }
-  .bar span { margin-left: 12px; font-size: 12px; color: var(--muted); background: var(--paper); padding: 3px 12px; border-radius: 6px; }
-  .scroll { max-height: 640px; overflow-y: auto; scrollbar-width: thin; }
-  .mobile .browser { border-radius: 30px; padding: 10px; background: var(--ink); border-color: var(--ink); }
-  .mobile .scroll { border-radius: 22px; background: var(--paper); }
-  .hint { font-size: 13px; color: var(--muted); margin-top: 12px; }
+  /* Bento */
+  .grid { display: grid; gap: clamp(12px, 1.6vw, 20px); }
+  .card { border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: #fff; }
+  .card.fill { background: var(--grey); border-color: var(--grey); }
+  .web { grid-template-columns: 1fr 340px; align-items: start; }
+  .web .stack { display: grid; gap: clamp(12px, 1.6vw, 20px); }
+  .web .dark { background: var(--ink); border-color: var(--ink); }
+  .phone { position: sticky; top: 24px; background: var(--ink); border-radius: 36px; padding: 10px; }
+  .phone .scroller { height: min(720px, calc(100vh - 68px)); border-radius: 28px; overflow-y: auto; background: #fff; scrollbar-width: none; }
+  .phone .scroller::-webkit-scrollbar { display: none; }
 
-  /* Brand */
-  .brand { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-  .brand .tile { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-  .brand img { cursor: zoom-in; }
-  .swatches { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-  .sw { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
-  .sw i { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); }
+  .brand { grid-template-columns: repeat(3, 1fr); }
+  .brand .wide { grid-column: 1 / -1; }
+  .brand .card { display: flex; align-items: center; }
+  .icons { grid-template-columns: 1fr 2.34fr; margin-top: clamp(12px, 1.6vw, 20px); }
+  .icons .wide { grid-column: 1 / -1; }
 
-  /* Footer */
-  footer { margin-top: 112px; background: var(--ink); color: #fff; }
-  footer .wrap { padding-top: 64px; padding-bottom: 40px; }
-  footer h2 { max-width: 20ch; }
-  footer p { color: #b5b5b0; margin-top: 14px; max-width: 52ch; }
-  .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 56px; padding-top: 24px; border-top: 1px solid #333; font-size: 13px; color: #8f8f8a; }
+  /* Foot */
+  footer { margin-top: clamp(96px, 12vw, 160px); border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 28px; padding-bottom: 36px; font-size: 14px; color: var(--mute); flex-wrap: wrap; }
 
   /* Lightbox */
-  .lb {
-    position: fixed; inset: 0; z-index: 50; background: rgba(20,20,20,.92);
-    display: none; align-items: flex-start; justify-content: center; overflow: auto; padding: 48px 16px; cursor: zoom-out;
-  }
-  .lb.open { display: flex; }
-  .lb img { max-width: min(1400px, 100%); border-radius: 10px; }
-  .lb button {
-    position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%;
-    border: 0; background: #fff; color: var(--ink); font-size: 20px; cursor: pointer;
-  }
+  .lb { position: fixed; inset: 0; z-index: 50; background: rgba(18,18,18,.94); display: none; overflow: auto; padding: 56px var(--gut); cursor: zoom-out; }
+  .lb.open { display: block; }
+  .lb img { max-width: 1440px; margin: 0 auto; border-radius: 12px; }
+  .lb button { position: fixed; top: 14px; right: 14px; width: 42px; height: 42px; border-radius: 50%; border: 0; background: #fff; font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink); }
 
-  /* Reveal */
-  .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .rv { opacity: 0; transform: translateY(20px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
   .rv.in { opacity: 1; transform: none; }
 
-  @media (max-width: 900px) {
-    .links { display: none; }
-    .steps { grid-template-columns: 1fr 1fr; }
-    .step:nth-child(3) { border-left: 0; padding-left: 0; }
-    .phones { grid-template-columns: 1fr 1fr; gap: 32px 16px; }
-    .frame { padding: 18px 18px 0; }
-    .sites { grid-template-columns: 1fr; }
-    .mobile { max-width: 320px; margin: 0 auto; width: 100%; }
-    .brand { grid-template-columns: 1fr; }
+  @media (max-width: 1080px) {
+    .web { grid-template-columns: 1fr; }
+    .phone { position: static; max-width: 340px; width: 100%; justify-self: center; }
+    .phone .scroller { height: 640px; }
+    .brand { grid-template-columns: 1fr 1fr; }
+    .brand .comp { grid-column: 1 / -1; }
   }
-  @media (max-width: 560px) {
-    .wrap { padding: 0 16px; }
-    .hero { padding: 56px 0 40px; }
-    section { padding-top: 72px; }
-    .steps { grid-template-columns: 1fr; }
-    .step, .step + .step { padding: 22px 0; border-left: 0; border-bottom: 1px solid var(--line); }
-    .phones { grid-template-columns: 1fr; }
-    .frame img { max-width: 260px; }
-    .tag { display: none; }
-    .scroll { max-height: 480px; }
+  @media (max-width: 720px) {
+    .top nav { display: none; }
+    .brand, .icons { grid-template-columns: 1fr; }
+    .strip { grid-auto-columns: 72%; }
+    .card, .screen .shot { border-radius: 14px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .rv { opacity: 1; transform: none; transition: none; }
-    .frame img { transition: none; }
+    .screen img { transition: none; }
   }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap">
-    <a class="logo" href="#top" aria-label="TownLoop home">
-      <svg viewBox="0 0 30 18" fill="none" aria-hidden="true">
-        <circle cx="9" cy="9" r="7" stroke="#1a1a1a" stroke-width="2.6"/>
-        <circle cx="21" cy="9" r="7" stroke="#f26b2e" stroke-width="2.6"/>
-      </svg>
-      townloop
-    </a>
-    <div class="links">
-      <a href="#how">How it works</a>
-      <a href="#flow">User flow</a>
-      <a href="#website">Website</a>
-      <a href="#brand">Brand</a>
-    </div>
-    <span class="tag">Design preview</span>
-  </div>
-</nav>
+<div class="wrap top">
+  <a class="mark" href="#">
+    <svg viewBox="0 0 38 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.2" stroke="#1a1a1a" stroke-width="3.4"/>
+      <circle cx="26" cy="12" r="9.2" stroke="#f26b2e" stroke-width="3.4"/>
+    </svg>
+    townloop
+  </a>
+  <nav>
+    <a href="#app">App</a>
+    <a href="#website">Website</a>
+    <a href="#brand">Brand</a>
+  </nav>
+</div>
 
-<header class="hero" id="top">
-  <div class="wrap">
-    <p class="eyebrow">Sime Darby Property University Hackathon 2026</p>
-    <h1>Borrow from next door, not from a store.</h1>
-    <p class="lead">TownLoop lets verified residents lend tools, share spaces and find help from neighbours on their own street. Everyone signs in with SDP PRIME, so every account is a real resident from day one and the money spent stays in the township.</p>
-    <div class="meta">
-      <span class="chip">Township of Tomorrow</span>
-      <span class="chip">Mobile app</span>
-      <span class="chip">Landing page</span>
-      <span class="chip">Pilot: Elmina Valley</span>
-    </div>
-  </div>
+<header class="wrap hero">
+  <h1>Borrow from next door, <em>not from a store.</em></h1>
 </header>
 
-<div class="wrap rv">
-  <div class="overview">
-    <img src="design/00-app-screens-overview.png" alt="Overview of six TownLoop app screens" data-zoom>
+<div class="stage rv">
+  <div class="wrap">
+    <img class="zoom" src="design/00-app-screens-overview.png" alt="TownLoop app screens">
   </div>
 </div>
 
-<section id="how">
+<section id="app">
   <div class="wrap">
-    <div class="head rv">
-      <div>
-        <p class="num">01</p>
-        <h2>How it works</h2>
-      </div>
-      <p>One QR poster per clubhouse. Residents scan, get verified, and start lending within minutes.</p>
-    </div>
-    <div class="steps rv">
-      <div class="step"><b>1</b><h3>Scan at the clubhouse</h3><p>Siti scans the poster, signs in with SDP PRIME and her address is checked on the spot.</p></div>
-      <div class="step"><b>2</b><h3>List or find something</h3><p>She lists her jet washer at RM30 a day. Tan, two streets away, books it for Saturday.</p></div>
-      <div class="step"><b>3</b><h3>Hand over at the gate</h3><p>Tan scans Siti's QR code. His RM100 deposit is held and the rental starts.</p></div>
-      <div class="step"><b>4</b><h3>Give it back</h3><p>Scanned back on Sunday, the deposit is released and both of them earn Eco Points.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="flow">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <p class="num">02</p>
-        <h2>User flow</h2>
-      </div>
-      <p>Follow Siti and Tan through one full loop, from sign in to earning points. Tap any screen to enlarge.</p>
-    </div>
-    <div class="phones">
-      <div class="phone rv"><figure>
-        <div class="frame"><img src="design/03-siti-scans-and-signs-in.png" alt="Sign in screen" loading="lazy" data-zoom></div>
-        <figcaption><strong>Sign in</strong><span>Siti scans the clubhouse poster and signs in with SDP PRIME.</span></figcaption>
-      </figure></div>
-      <div class="phone rv"><figure>
-        <div class="frame"><img src="design/04-tan-home.png" alt="Home screen" loading="lazy" data-zoom></div>
-        <figcaption><strong>Home</strong><span>Tan browses tools, spaces and help near him.</span></figcaption>
-      </figure></div>
-      <div class="phone rv"><figure>
-        <div class="frame"><img src="design/05-tan-books-siti-washer.png" alt="Booking screen" loading="lazy" data-zoom></div>
-        <figcaption><strong>Booking</strong><span>Tan books Siti's jet washer for the weekend.</span></figcaption>
-      </figure></div>
-      <div class="phone rv"><figure>
-        <div class="frame"><img src="design/06-siti-qr-handover.png" alt="QR handover screen" loading="lazy" data-zoom></div>
-        <figcaption><strong>QR handover</strong><span>Tan scans Siti's QR at the gate and the deposit is held.</span></figcaption>
-      </figure></div>
-      <div class="phone rv"><figure>
-        <div class="frame"><img src="design/07-tan-finds-a-gardener.png" alt="Get help screen" loading="lazy" data-zoom></div>
-        <figcaption><strong>Get help</strong><span>Tan finds a neighbour to mow his lawn.</span></figcaption>
-      </figure></div>
-      <div class="phone rv"><figure>
-        <div class="frame"><img src="design/08-siti-eco-points.png" alt="Eco Points screen" loading="lazy" data-zoom></div>
-        <figcaption><strong>Eco Points</strong><span>Siti redeems points for vouchers or maintenance fees.</span></figcaption>
-      </figure></div>
+    <div class="label rv"><h2>App</h2><span>06</span></div>
+    <div class="strip rv">
+      <div class="screen"><div class="shot"><img class="zoom" src="design/03-siti-scans-and-signs-in.png" alt="Sign in" loading="lazy"></div><p>Sign in</p></div>
+      <div class="screen"><div class="shot"><img class="zoom" src="design/04-tan-home.png" alt="Home" loading="lazy"></div><p>Home</p></div>
+      <div class="screen"><div class="shot"><img class="zoom" src="design/05-tan-books-siti-washer.png" alt="Booking" loading="lazy"></div><p>Booking</p></div>
+      <div class="screen"><div class="shot"><img class="zoom" src="design/06-siti-qr-handover.png" alt="QR handover" loading="lazy"></div><p>QR handover</p></div>
+      <div class="screen"><div class="shot"><img class="zoom" src="design/07-tan-finds-a-gardener.png" alt="Get help" loading="lazy"></div><p>Get help</p></div>
+      <div class="screen"><div class="shot"><img class="zoom" src="design/08-siti-eco-points.png" alt="Eco Points" loading="lazy"></div><p>Eco Points</p></div>
     </div>
   </div>
 </section>
 
 <section id="website">
   <div class="wrap">
-    <div class="head rv">
-      <div>
-        <p class="num">03</p>
-        <h2>Website</h2>
+    <div class="label rv"><h2>Website</h2><span>Desktop and mobile</span></div>
+    <div class="grid web rv">
+      <div class="stack">
+        <div class="card"><img class="zoom" src="design/details/web-hero.png" alt="Website hero" loading="lazy"></div>
+        <div class="card"><img class="zoom" src="design/details/web-how.png" alt="How it works" loading="lazy"></div>
+        <div class="card fill"><img class="zoom" src="design/details/web-features.png" alt="Features" loading="lazy"></div>
+        <div class="card"><img class="zoom" src="design/details/web-safety.png" alt="Safety" loading="lazy"></div>
+        <div class="card"><img class="zoom" src="design/details/web-eco.png" alt="Eco Points" loading="lazy"></div>
+        <div class="card dark"><img class="zoom" src="design/details/web-cta.png" alt="Call to action" loading="lazy"></div>
       </div>
-      <p>The landing page residents see before they sign in. Scroll inside each frame to see the full page.</p>
-    </div>
-    <div class="sites rv">
-      <div>
-        <div class="browser">
-          <div class="bar"><i></i><i></i><i></i><span>townloop.my</span></div>
-          <div class="scroll"><img src="design/09-website-desktop.png" alt="TownLoop website on desktop" loading="lazy"></div>
-        </div>
-        <p class="hint">Desktop</p>
-      </div>
-      <div class="mobile">
-        <div class="browser">
-          <div class="scroll"><img src="design/10-website-mobile.png" alt="TownLoop website on mobile" loading="lazy"></div>
-        </div>
-        <p class="hint">Mobile</p>
-      </div>
+      <div class="phone"><div class="scroller"><img src="design/10-website-mobile.png" alt="Website on mobile" loading="lazy"></div></div>
     </div>
   </div>
 </section>
 
 <section id="brand">
   <div class="wrap">
-    <div class="head rv">
-      <div>
-        <p class="num">04</p>
-        <h2>Brand</h2>
-      </div>
-      <p>Calm, neighbourly and quiet. Warm orange is saved for the moments that matter.</p>
+    <div class="label rv"><h2>Brand</h2><span>Moodboard and icons</span></div>
+    <div class="grid brand rv">
+      <div class="card wide"><img class="zoom" src="design/details/brand-wordmark.png" alt="Wordmark" loading="lazy"></div>
+      <div class="card"><img class="zoom" src="design/details/brand-colour.png" alt="Colour" loading="lazy"></div>
+      <div class="card"><img class="zoom" src="design/details/brand-type.png" alt="Type" loading="lazy"></div>
+      <div class="card comp"><img class="zoom" src="design/details/brand-components.png" alt="Components" loading="lazy"></div>
+      <div class="card wide"><img class="zoom" src="design/details/brand-principles.png" alt="Principles" loading="lazy"></div>
     </div>
-    <div class="brand rv">
-      <div class="tile"><img src="design/01-moodboard.png" alt="TownLoop moodboard" loading="lazy" data-zoom></div>
-      <div class="tile"><img src="design/02-custom-icons.png" alt="TownLoop custom icons" loading="lazy" data-zoom></div>
-    </div>
-    <div class="swatches rv">
-      <div class="sw"><i style="background:#1a1a1a"></i>Ink #1A1A1A</div>
-      <div class="sw"><i style="background:#f26b2e"></i>Loop orange #F26B2E</div>
-      <div class="sw"><i style="background:#f6f6f4"></i>Paper #F6F6F4</div>
-      <div class="sw"><i style="background:#ffffff"></i>White #FFFFFF</div>
+    <div class="grid icons rv">
+      <div class="card"><img class="zoom" src="design/details/icons-construction.png" alt="Logo construction" loading="lazy"></div>
+      <div class="card"><img class="zoom" src="design/details/icons-feature.png" alt="Feature icons" loading="lazy"></div>
+      <div class="card wide"><img class="zoom" src="design/details/icons-utility.png" alt="Utility icons" loading="lazy"></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <h2>One QR poster per clubhouse. That's the rollout.</h2>
-    <p>TownLoop runs on SDP PRIME, so residents are verified from day one and the money they spend stays in the township.</p>
-    <div class="foot">
-      <span>A student concept for the Sime Darby Property University Hackathon 2026.</span>
-      <span>Made in Kuala Lumpur</span>
-    </div>
+    <span>TownLoop</span>
+    <span>Sime Darby Property University Hackathon 2026</span>
   </div>
 </footer>
 
@@ -337,11 +213,10 @@
 <script>
   const lb = document.getElementById('lb');
   const lbImg = lb.querySelector('img');
-  document.querySelectorAll('[data-zoom]').forEach(img => {
+  document.querySelectorAll('.zoom').forEach(img => {
     img.addEventListener('click', () => {
-      lbImg.src = img.src;
-      lbImg.alt = img.alt;
-      lb.classList.add('open');
+      lbImg.src = img.src; lbImg.alt = img.alt;
+      lb.classList.add('open'); lb.scrollTop = 0;
       document.body.style.overflow = 'hidden';
     });
   });
@@ -349,9 +224,9 @@
   lb.addEventListener('click', close);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
-  const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
-    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
-  }, { threshold: 0.12 }) : null;
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 }) : null;
   document.querySelectorAll('.rv').forEach(el => io ? io.observe(el) : el.classList.add('in'));
 </script>
 </body>
