@@ -74,8 +74,8 @@ function ListingPageInner() {
   return (
     <div>
       <div className="mx-auto w-full max-w-5xl md:px-8 md:pt-8">
-        <div className="md:grid md:grid-cols-[1.1fr_1fr] md:gap-10">
-          <div className="relative flex aspect-[4/3] items-center justify-center bg-surface md:rounded-[14px]">
+        <div className="md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-10">
+          <div className="relative flex aspect-[4/3] md:sticky md:top-24 md:self-start items-center justify-center bg-surface md:rounded-[14px]">
             <button onClick={() => router.back()} aria-label="Back" className="absolute top-3 left-3 flex size-10 items-center justify-center rounded-full bg-white">
               <BackIcon size={20} />
             </button>
