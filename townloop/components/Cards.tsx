@@ -1,55 +1,62 @@
 "use client";
 
 import Link from "next/link";
-import { ArtIcon } from "./Art";
+import { ArtPhoto, ArtTile } from "./Art";
 import { HeartIcon } from "./Icons";
-import { Avatar, Badge, Button, Rating } from "./ui";
+import { Badge, Button, Rating } from "./ui";
 import { vendorKindOf } from "@/lib/data";
 import { distance, fmtDay, fmtDistance, rm, timeAgo, unitLabel } from "@/lib/format";
 import { useStore } from "@/lib/store";
 import type { Listing, Post } from "@/lib/types";
 
-/** Carousell style card: picture first, then price, then who and how far. */
-export function ListingCard({ l, boosted = false }: { l: Listing; boosted?: boolean }) {
+/**
+ * Listing card: big photo with the owner chip, kind chip and save heart on
+ * top, then title, stars, price. `size="lg"` is the one column feed card.
+ */
+export function ListingCard({ l, boosted = false, size = "md" }: { l: Listing; boosted?: boolean; size?: "md" | "lg" }) {
   const { me, user, vendor, state, toggleSave } = useStore();
   const resident = user(l.ownerId);
   const v = vendor(l.ownerId);
   const saved = state.saved.includes(l.id);
   const m = resident ? distance(me ?? undefined, resident) : 0;
   const kind = vendorKindOf(l);
+  const owner = l.ownerId === me?.id ? "You" : (v?.name.split(" ")[0] ?? resident?.name ?? "");
+  const lg = size === "lg";
 
   return (
-    <div className="group relative">
+    <div className="group relative overflow-hidden rounded-[16px] border border-line bg-white transition-shadow hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)]">
       <Link href={`/item?id=${l.id}`} className="block">
-        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[12px] bg-surface text-ink transition-colors group-hover:bg-[#EEEEEB]">
-          <span className={boosted || kind || l.free || l.facility ? "pt-8" : ""}>
-            <ArtIcon art={l.art} size={64} />
+        <div className={`relative overflow-hidden bg-surface ${lg ? "aspect-[16/11]" : "aspect-[4/3]"}`}>
+          <ArtPhoto art={l.art} w={lg ? 900 : 600} h={lg ? 620 : 450} alt={l.title} iconSize={64} />
+          <span className="absolute top-2.5 left-2.5 max-w-[60%] truncate rounded-full bg-ink/85 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
+            {owner}
           </span>
-          <span className="absolute top-2 right-12 left-2 flex flex-col items-start gap-1">
+          <span className="absolute bottom-2.5 left-2.5 flex flex-wrap gap-1">
             {boosted ? <Badge kind="boost" /> : null}
-            {l.free ? <Badge kind="free" /> : null}
-            {l.facility ? <Badge kind="facility" /> : null}
-            {kind ? <Badge kind={kind} /> : null}
+            {kind ? <Badge kind={kind} className="bg-white text-ink shadow-sm" /> : null}
+            {l.free ? <Badge kind="free" className="bg-white shadow-sm" /> : null}
+            {l.facility ? <Badge kind="facility" className="bg-white shadow-sm" /> : null}
           </span>
         </div>
-        <div className="mt-2 flex items-center gap-1.5 text-[12px] text-muted">
-          <Avatar name={resident?.name ?? v?.name ?? "?"} size={18} vendor={!!v} />
-          <span className="truncate">{l.ownerId === me?.id ? "You" : (resident?.name ?? v?.name)}</span>
-          {m ? <span className="shrink-0">· {fmtDistance(m)}</span> : null}
+        <div className={lg ? "px-4 pt-3.5 pb-4" : "px-3 pt-2.5 pb-3"}>
+          <p className={`line-clamp-2 leading-snug font-semibold ${lg ? "text-[17px]" : "text-[14px]"}`}>{l.title}</p>
+          <Rating value={l.rating} count={l.reviews} stars className={`mt-1 ${lg ? "text-[13px]" : "text-[12px]"}`} />
+          <p className={`mt-1.5 font-semibold tracking-[-0.01em] ${lg ? "text-[20px]" : "text-[16px]"}`}>
+            {l.free ? "Free" : rm(l.price)}
+            {!l.free ? <span className={`font-normal text-muted ${lg ? "text-[14px]" : "text-[12px]"}`}>/{unitLabel[l.unit]}</span> : null}
+          </p>
+          {l.groupPrice ? (
+            <p className={`text-ember-text ${lg ? "text-[13px]" : "text-[12px]"} font-medium`}>{rm(l.groupPrice)} in a street group</p>
+          ) : (
+            <p className={`truncate text-muted ${lg ? "text-[13px]" : "text-[12px]"}`}>{m ? `${fmtDistance(m)} away` : v ? v.area : l.category}</p>
+          )}
         </div>
-        <p className="mt-1 line-clamp-2 text-[14px] leading-snug font-medium">{l.title}</p>
-        <p className="mt-1 text-[15px] font-semibold">
-          {l.free ? "Free" : rm(l.price)}
-          {!l.free ? <span className="text-[12px] font-normal text-muted">/{unitLabel[l.unit]}</span> : null}
-          {l.groupPrice ? <span className="ml-1.5 text-[12px] font-medium text-ember-text">{rm(l.groupPrice)} in a group</span> : null}
-        </p>
-        <Rating value={l.rating} count={l.reviews} className="mt-0.5 text-[12px]" />
       </Link>
       <button
         onClick={() => toggleSave(l.id)}
         aria-label={saved ? `Remove ${l.title} from saved` : `Save ${l.title}`}
         aria-pressed={saved}
-        className="absolute top-1.5 right-1.5 flex size-9 items-center justify-center rounded-full bg-white/90 text-ink hover:bg-white"
+        className="press absolute top-2 right-2 flex size-9 items-center justify-center rounded-full bg-white text-ink shadow-sm hover:bg-white"
       >
         <HeartIcon size={18} filled={saved} />
       </button>
@@ -68,11 +75,9 @@ export function PostCard({ p, onRespond }: { p: Post; onRespond?: () => void }) 
   const replies = state.requests.filter((r) => r.postId === p.id).length;
 
   return (
-    <article className="border-b border-line py-4">
+    <article className="mb-3 rounded-[16px] border border-line bg-white p-4">
       <div className="flex gap-3.5">
-        <span className="flex size-14 shrink-0 items-center justify-center rounded-[10px] bg-surface">
-          <ArtIcon art={p.art} size={28} />
-        </span>
+        <ArtTile art={p.art} size={64} />
         <div className="min-w-0 flex-1">
           <p className="text-[12px] text-muted">
             {TIER_WORD[p.tier]} · {mine ? "You" : author?.name} · {timeAgo(p.createdAt)}
@@ -95,7 +100,7 @@ export function PostCard({ p, onRespond }: { p: Post; onRespond?: () => void }) 
             ) : replied ? (
               <span className="text-[13px] text-muted">Request sent. {author?.name} will see your profile first.</span>
             ) : onRespond ? (
-              <Button size="sm" variant="secondary" onClick={onRespond}>
+              <Button size="sm" variant="accent" onClick={onRespond}>
                 Request to chat
               </Button>
             ) : null}

@@ -6,7 +6,7 @@ import { Suspense, useState } from "react";
 import { ArtTile } from "@/components/Art";
 import { RequestCard, RespondSheet } from "@/components/People";
 import { BackIcon } from "@/components/Icons";
-import { Avatar, Badge, Button, Empty, Page, SectionTitle } from "@/components/ui";
+import { Avatar, BackButton, Badge, Button, Empty, Page, SectionTitle } from "@/components/ui";
 import { fmtDay, rm, timeAgo } from "@/lib/format";
 import { useStore } from "@/lib/store";
 
@@ -36,11 +36,7 @@ function PostPageInner() {
 
   return (
     <Page>
-      <div className="flex h-11 items-center">
-        <button onClick={() => router.back()} aria-label="Back" className="-ml-2.5 flex size-11 items-center justify-center">
-          <BackIcon size={22} />
-        </button>
-      </div>
+      <BackButton onClick={() => router.back()} />
 
       <div className="mt-2 flex gap-4">
         <ArtTile art={p.art} size={64} />
@@ -83,7 +79,7 @@ function PostPageInner() {
           You requested to chat. {author?.name} sees your profile and decides. {myReply.status === "accepted" ? "Accepted, check Bookings." : ""}
         </p>
       ) : (
-        <Button className="mt-6 w-full" onClick={() => setOpen(true)}>Request to chat</Button>
+        <Button variant="accent" size="lg" className="mt-6 w-full" onClick={() => setOpen(true)}>Request to chat with {author?.name}</Button>
       )}
 
       <RespondSheet post={open ? p : null} open={open} onClose={() => setOpen(false)} />

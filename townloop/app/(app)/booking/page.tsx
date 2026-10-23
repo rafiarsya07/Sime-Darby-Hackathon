@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState, type ReactNode } from "react";
-import { ArtTile } from "@/components/Art";
+import { ArtPhoto } from "@/components/Art";
 import { QrCode } from "@/components/QrCode";
 import { RequestCard, useTrackRecord } from "@/components/People";
-import { BackIcon, CameraIcon, CheckIcon, DepositIcon, MessagesIcon, StarIcon } from "@/components/Icons";
-import { Avatar, Badge, Button, DemoNote, Dot, Empty, inputClass, LinkButton, Page, Rating } from "@/components/ui";
-import { USERS, VENDORS } from "@/lib/data";
-import { fmtDay, fmtTime, rm } from "@/lib/format";
+import { CameraIcon, CheckIcon, EcoPointsIcon, MessagesIcon, StarIcon } from "@/components/Icons";
+import { Avatar, BackButton, Badge, Button, DemoNote, Dot, Empty, inputClass, LinkButton, Page, Rating } from "@/components/ui";
+import { REWARDS, USERS, VENDORS } from "@/lib/data";
+import { fmtDay, fmtPoints, fmtTime, rm, unitLabel, units } from "@/lib/format";
 import { awardsFor, DISPUTE_HOURS } from "@/lib/points";
 import { useStore, whatsappLink } from "@/lib/store";
 import type { BookingStatus } from "@/lib/types";
@@ -17,23 +17,23 @@ import type { BookingStatus } from "@/lib/types";
 const STEPS: Record<"rent" | "other", { status: BookingStatus; label: string }[]> = {
   rent: [
     { status: "requested", label: "Requested" },
-    { status: "accepted", label: "Accepted, WhatsApp opened" },
+    { status: "accepted", label: "Accepted" },
     { status: "in_use", label: "Picked up" },
     { status: "done", label: "Returned" },
-    { status: "closed", label: "Closed, points paid" },
+    { status: "closed", label: "Points paid" },
   ],
   other: [
     { status: "requested", label: "Requested" },
-    { status: "accepted", label: "Accepted, WhatsApp opened" },
+    { status: "accepted", label: "Accepted" },
     { status: "done", label: "Job done" },
-    { status: "closed", label: "Closed, points paid" },
+    { status: "closed", label: "Points paid" },
   ],
 };
 
 function BookingPageInner() {
   const id = useSearchParams().get("id") ?? "";
   const router = useRouter();
-  const { me, state, nameOf, user, vendor, setStatus, closeBooking, answerRequest, review, fillGroup } = useStore();
+  const { me, state, nameOf, user, vendor, listing, balance, setStatus, closeBooking, answerRequest, review, fillGroup } = useStore();
   const [scanning, setScanning] = useState(false);
   const [reported, setReported] = useState(false);
   const b = state.bookings.find((x) => x.id === id);
@@ -68,6 +68,18 @@ function BookingPageInner() {
     { vendorKind: v?.kind, customer: USERS.find((u) => u.id === b.customerId), provider: USERS.find((u) => u.id === b.providerId) },
   ).filter((a) => a.userId === me.id);
   const previewTotal = preview.reduce((s, a) => s + a.amount, 0);
+  const earned = paid.reduce((s, p) => s + p.amount, 0);
+  const bal = balance(me.id);
+  const nextReward = REWARDS.filter((r) => r.id !== "donate").sort((a, c) => a.cost - c.cost).find((r) => r.cost > bal);
+  const lst = b.listingId ? listing(b.listingId) : undefined;
+  const lineItem = lst && !b.free
+    ? (() => {
+        const isDay = lst.unit === "day" || lst.unit === "night";
+        const n = isDay ? units(b.from, b.to, lst.unit) : 1;
+        const unit = b.group && lst.groupPrice ? lst.groupPrice : lst.price;
+        return { label: `${rm(unit)} × ${n} ${unitLabel[lst.unit]}${n > 1 ? "s" : ""}`, value: rm(unit * n) };
+      })()
+    : null;
 
   function scan(next: BookingStatus) {
     setScanning(true);
@@ -82,7 +94,7 @@ function BookingPageInner() {
       href={whatsappLink(`Hi ${other}, it's ${me.name} from TownLoop about "${short}" (booking ${b.id}).`)}
       target="_blank"
       rel="noreferrer"
-      className="press inline-flex h-12 w-full items-center justify-center gap-2 rounded-[10px] border border-line-strong text-[16px] font-semibold hover:border-ink"
+      className="press inline-flex h-12 w-full items-center justify-center gap-2 rounded-[12px] border border-line-strong text-[16px] font-semibold hover:border-ink"
     >
       <MessagesIcon size={20} /> Chat with {other} on WhatsApp
     </a>
@@ -90,28 +102,18 @@ function BookingPageInner() {
 
   return (
     <Page>
-      <div className="flex h-11 items-center">
-        <button onClick={() => router.back()} aria-label="Back" className="-ml-2.5 flex size-11 items-center justify-center">
-          <BackIcon size={22} />
-        </button>
-        <span className="flex-1 text-center text-[16px] font-semibold">Booking {b.id.toUpperCase()}</span>
-        <span className="w-8" />
+      <div className="flex items-center justify-between">
+        <BackButton onClick={() => router.back()} />
+        <span className="rounded-full bg-surface px-3 py-1.5 text-[12px] font-semibold text-ink-2">Booking {b.id.toUpperCase()}</span>
       </div>
 
-      <div className="mt-3 flex items-center gap-3.5">
-        <ArtTile art={b.art} size={56} />
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[16px] font-semibold">{b.title}</span>
-          <span className="block text-[13px] text-muted">
-            {fmtDay(b.from)}
-            {b.to !== b.from ? ` to ${fmtDay(b.to)}` : ""}
-            {b.time ? `, ${b.time}` : ""} · {b.total ? rm(b.total) : "Free"}
-            {b.group ? " · street group" : ""}
-          </span>
-        </span>
+      {b.status !== "declined" ? <Stepper steps={STEPS[b.tier === "rent" ? "rent" : "other"]} reached={reached} /> : null}
+
+      <div className="relative mt-5 aspect-[16/8] overflow-hidden rounded-[18px] bg-surface">
+        <ArtPhoto art={b.art} w={1000} h={500} alt={b.title} iconSize={80} eager />
       </div>
 
-      <section className="mt-7" aria-live="polite">
+      <section className="mt-6" aria-live="polite">
         {b.status === "declined" ? (
           <Headline eyebrow="Not this time" title={isProvider ? "You declined this request" : `${provider} can't take this one`}>
             <p className="mt-2 text-[14px] text-muted">No contact details were shared.</p>
@@ -265,31 +267,45 @@ function BookingPageInner() {
         {(b.status === "done" || b.status === "closed") && !reviewed && otherId !== "sdp" ? <ReviewForm name={other} hint={isProvider ? "Friendly, paid on time." : b.tier === "rent" ? "Clean and ready on time." : "Neat work, came on time."} onSubmit={(s, t) => review(b.id, s, t)} /> : null}
       </section>
 
-      {b.status !== "declined" ? (
-        <ol className="mt-8 border-t border-line">
-          {STEPS[b.tier === "rent" ? "rent" : "other"].map((s) => {
-            const hit = reached(s.status);
-            return (
-              <li key={s.status} className="flex items-center gap-3 border-b border-line py-3 text-[15px]">
-                {hit ? <CheckIcon size={20} /> : <span className="flex size-5 items-center justify-center"><span className="size-2 rounded-full border border-line-strong" /></span>}
-                <span className={`flex-1 ${hit ? "" : "text-muted"}`}>{s.label}</span>
-                {hit ? <span className="text-[13px] text-muted">{fmtDay(hit.at)}, {fmtTime(hit.at)}</span> : null}
-              </li>
-            );
-          })}
-        </ol>
-      ) : null}
-
-      {b.deposit ? (
-        <div className="flex items-center justify-between border-b border-line py-3 text-[15px]">
-          <span className="flex items-center gap-2 text-muted"><DepositIcon size={18} /> Deposit</span>
-          <span className="font-medium">
-            {rm(b.deposit)} {b.status === "in_use" ? "held" : b.status === "done" || b.status === "closed" ? "released" : "on pick up"}
-          </span>
+      <section className="mt-8 rounded-[18px] border border-line p-4">
+        <h2 className="text-[16px] font-semibold">{b.title}</h2>
+        <dl className="mt-2 space-y-1.5 text-[14px]">
+          <div className="flex justify-between gap-4"><dt className="text-muted">Date</dt><dd>{fmtDay(b.from)}{b.to !== b.from ? ` to ${fmtDay(b.to)}` : ""}{b.time ? `, ${b.time}` : ""}</dd></div>
+          {lineItem ? <div className="flex justify-between gap-4"><dt className="text-muted">{lineItem.label}</dt><dd>{lineItem.value}</dd></div> : null}
+          {b.group ? <div className="flex justify-between gap-4"><dt className="text-muted">Street group</dt><dd>{group ? `${group.joined.length} of ${group.target} homes` : "Yes"}</dd></div> : null}
+          {b.deposit ? (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Deposit</dt>
+              <dd>{rm(b.deposit)} {b.status === "in_use" ? "held" : b.status === "done" || b.status === "closed" ? "released" : "on pick up"}</dd>
+            </div>
+          ) : null}
+        </dl>
+        <div className="mt-3 flex items-baseline justify-between border-t border-line pt-3">
+          <span className="text-[15px] font-semibold">Total</span>
+          <span className="text-[20px] font-semibold tracking-[-0.01em]">{b.total ? rm(b.total) : "Free"}</span>
         </div>
+        <p className="mt-1 text-[12px] text-muted">{b.providerKind === "vendor" ? "Paid to the vendor after the job." : "Paid directly by cash or DuitNow."}</p>
+      </section>
+
+      {b.status !== "declined" ? (
+        <section className="mt-4 rounded-[18px] bg-[#F1F8F3] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-[16px] font-semibold"><EcoPointsIcon size={22} /> Eco points</h2>
+            <span className="text-[13px] font-semibold text-[#17803D]">
+              {earned ? `+${fmtPoints(earned)} earned` : previewTotal ? `+${fmtPoints(previewTotal)} on close` : "None for this one"}
+            </span>
+          </div>
+          <span className="mt-3 block h-2 overflow-hidden rounded-full bg-white">
+            <span className="block h-full rounded-full bg-[#22A55B]" style={{ width: `${Math.min(100, (bal / (nextReward?.cost ?? Math.max(bal, 1))) * 100)}%` }} />
+          </span>
+          <p className="mt-2 flex items-center justify-between text-[13px] text-ink-2">
+            <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-[#F5A524]" /> {fmtPoints(bal)} points</span>
+            <span className="text-muted">{nextReward ? `${fmtPoints(nextReward.cost - bal)} to ${nextReward.title}` : "Enough for any reward"}</span>
+          </p>
+        </section>
       ) : null}
 
-      <Link href={`/person?id=${otherId}`} className="mt-6 flex items-center gap-3 hover:opacity-80">
+      <Link href={`/person?id=${otherId}`} className="mt-4 flex items-center gap-3 rounded-[18px] border border-line p-3.5 hover:border-line-strong">
         <Avatar name={other} vendor={!!v && otherId === b.providerId} />
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2 text-[15px] font-semibold">
@@ -308,8 +324,8 @@ function BookingPageInner() {
 function Headline({ eyebrow, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
   return (
     <div>
-      <p className="text-[14px] text-muted">{eyebrow}</p>
-      <h1 className="mt-1 text-[24px] leading-tight font-semibold tracking-[-0.02em]">{title}</h1>
+      <p className="text-[13px] font-medium text-muted">{eyebrow}</p>
+      <h1 className="mt-1 text-[26px] leading-tight font-semibold tracking-[-0.025em]">{title}</h1>
       {children}
     </div>
   );
@@ -368,5 +384,33 @@ export default function BookingPage() {
     <Suspense fallback={null}>
       <BookingPageInner />
     </Suspense>
+  );
+}
+
+/** Horizontal progress: green checks for steps reached. */
+function Stepper({ steps, reached }: { steps: { status: BookingStatus; label: string }[]; reached: (s: BookingStatus) => { at: string } | undefined }) {
+  return (
+    <ol className="mt-5 flex items-start">
+      {steps.map((s, i) => {
+        const hit = !!reached(s.status);
+        const nextHit = i < steps.length - 1 && !!reached(steps[i + 1].status);
+        return (
+          <li key={s.status} className="relative flex flex-1 flex-col items-center text-center">
+            {i < steps.length - 1 ? (
+              <span className={`absolute top-[13px] left-1/2 h-[3px] w-full rounded-full ${nextHit ? "bg-[#22A55B]" : "bg-line"}`} aria-hidden="true" />
+            ) : null}
+            <span
+              className={`relative z-10 flex size-7 items-center justify-center rounded-full ${hit ? "bg-[#22A55B] text-white" : "border-2 border-line-strong bg-white"}`}
+            >
+              {hit ? (
+                <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3.2 3.2L15 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              ) : null}
+            </span>
+            <span className={`mt-1.5 px-0.5 text-[11px] leading-tight sm:text-[12px] ${hit ? "font-semibold text-ink" : "text-muted"}`}>{s.label}</span>
+            <span className="sr-only">{hit ? "done" : "not yet"}</span>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

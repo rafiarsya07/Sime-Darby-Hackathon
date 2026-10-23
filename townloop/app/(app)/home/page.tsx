@@ -6,8 +6,8 @@ import { ListingCard, PostCard } from "@/components/Cards";
 import { ArtTile } from "@/components/Art";
 import { ForecastCard } from "@/components/Forecast";
 import { RespondSheet } from "@/components/People";
-import { ChevronRightIcon, SearchIcon } from "@/components/Icons";
-import { Dot, Empty, Page, SectionTitle } from "@/components/ui";
+import { AlertsIcon, ChevronRightIcon, JetWasherIcon, LendAHandIcon, PostIcon, SearchIcon, ShopIcon } from "@/components/Icons";
+import { Avatar, Dot, Empty, Page, SectionTitle } from "@/components/ui";
 import { CATEGORIES, vendorKindOf } from "@/lib/data";
 import { distance, fmtDay, fmtPoints, rm } from "@/lib/format";
 import { useStore } from "@/lib/store";
@@ -23,8 +23,18 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const Grid = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-5">{children}</div>
+  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">{children}</div>
 );
+
+/** One big card per row on phones, like a feed. */
+const FeedGrid = ({ children }: { children: React.ReactNode }) => (
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">{children}</div>
+);
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+}
 
 export default function HomePage() {
   const { me, state, user, balance } = useStore();
@@ -78,16 +88,19 @@ export default function HomePage() {
 
   return (
     <Page wide>
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[14px] text-muted">
-          {me.precinct}, {me.phase}
-        </p>
-        <Link href="/me/points" className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-[13px] font-semibold sm:hidden">
-          <Dot /> {fmtPoints(balance(me.id))} pts
+      <p className="text-[13px] text-muted">For residents of {me.precinct}</p>
+      <div className="mt-2 flex items-center gap-3">
+        <Avatar name={me.name} size={48} />
+        <h1 className="min-w-0 flex-1 text-[21px] leading-tight font-semibold tracking-[-0.02em] sm:text-[24px]">
+          {greeting()}, {me.name.split(" ").pop()}
+        </h1>
+        <Link href="/me" aria-label={pending ? `${pending} new requests` : "Notifications"} className="press relative flex size-11 shrink-0 items-center justify-center rounded-full border border-line hover:border-line-strong">
+          <AlertsIcon size={20} />
+          {pending ? <span className="absolute top-1.5 right-1.5 size-2.5 rounded-full bg-ember ring-2 ring-white" /> : null}
         </Link>
       </div>
 
-      <label className="mt-3 flex h-12 items-center gap-2.5 rounded-[10px] bg-surface px-3.5 focus-within:ring-2 focus-within:ring-ink/10 lg:max-w-2xl">
+      <label className="mt-4 flex h-12 items-center gap-2.5 rounded-[12px] bg-surface px-3.5 focus-within:ring-2 focus-within:ring-ink/10 lg:max-w-2xl">
         <SearchIcon size={18} className="text-muted" />
         <span className="sr-only">Search TownLoop</span>
         <input
@@ -100,7 +113,7 @@ export default function HomePage() {
       </label>
 
       {pending ? (
-        <Link href="/me" className="mt-3 flex items-center gap-3 border-y border-line py-3 text-[14px] hover:bg-surface/50 lg:max-w-2xl">
+        <Link href="/me" className="mt-3 flex items-center gap-3 rounded-[14px] bg-ember-wash px-4 py-3 text-[14px] hover:bg-[#FFEADD] lg:max-w-2xl">
           <Dot />
           <span className="flex-1">
             <span className="font-semibold">{pending} {pending === 1 ? "neighbour wants" : "neighbours want"} to chat.</span>{" "}
@@ -166,6 +179,22 @@ export default function HomePage() {
 
           {tab === "foryou" ? (
             <>
+              <div className="mt-5 grid grid-cols-4 gap-2.5 sm:max-w-md">
+                {[
+                  { label: "Rent", Icon: JetWasherIcon, go: () => setTab("rent") },
+                  { label: "Gigs", Icon: LendAHandIcon, go: () => setTab("gigs") },
+                  { label: "Vendors", Icon: ShopIcon, go: () => setTab("vendors") },
+                ].map(({ label, Icon, go }) => (
+                  <button key={label} onClick={go} className="press flex flex-col items-center gap-1.5 rounded-[14px] bg-surface py-3 text-[13px] font-medium hover:bg-[#EEEEEA]">
+                    <Icon size={26} />
+                    {label}
+                  </button>
+                ))}
+                <Link href="/posts" className="press flex flex-col items-center gap-1.5 rounded-[14px] bg-surface py-3 text-[13px] font-medium hover:bg-[#EEEEEA]">
+                  <PostIcon size={26} />
+                  Posts
+                </Link>
+              </div>
               {openPosts.length ? (
                 <>
                   <SectionTitle action={<Link href="/posts" className="text-[14px] font-semibold underline underline-offset-2">All posts</Link>}>
@@ -176,13 +205,15 @@ export default function HomePage() {
                   </div>
                 </>
               ) : null}
-              <SectionTitle>Recommended near you</SectionTitle>
-              <Grid>
-                {forYou.slice(0, 8).map((l) => <ListingCard key={l.id} l={l} boosted={l.tier === "vendors"} />)}
-              </Grid>
+              <SectionTitle action={<button onClick={() => setTab("rent")} className="text-[14px] font-semibold underline underline-offset-2">See all</button>}>
+                Recommended near you
+              </SectionTitle>
+              <FeedGrid>
+                {forYou.slice(0, 6).map((l) => <ListingCard key={l.id} l={l} size="lg" />)}
+              </FeedGrid>
               <GroupBuys />
               <SectionTitle>More from your street</SectionTitle>
-              <Grid>{forYou.slice(8).map((l) => <ListingCard key={l.id} l={l} />)}</Grid>
+              <Grid>{forYou.slice(6).map((l) => <ListingCard key={l.id} l={l} />)}</Grid>
             </>
           ) : (
             <>
@@ -231,7 +262,7 @@ function GroupBuys({ inline = false }: { inline?: boolean }) {
                   {joined ? " · you're in" : ""}
                 </span>
                 <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-[#EDEDEA]">
-                  <span className="block h-full bg-ember" style={{ width: `${Math.min(100, (g.joined.length / g.target) * 100)}%` }} />
+                  <span className="block h-full rounded-full bg-ember" style={{ width: `${Math.min(100, (g.joined.length / g.target) * 100)}%` }} />
                 </span>
               </span>
               <span className="text-right text-[14px] font-semibold whitespace-nowrap">
@@ -246,7 +277,7 @@ function GroupBuys({ inline = false }: { inline?: boolean }) {
   );
   if (inline) {
     return (
-      <section className="rounded-[12px] border border-line px-4 py-2">
+      <section className="rounded-[16px] border border-line px-4 py-2">
         <h2 className="pt-2 text-[13px] font-semibold">Group buys on your street</h2>
         {body}
       </section>

@@ -102,7 +102,7 @@ export default function NewPostPage() {
           </span>
         </TextField>
 
-        <Button type="submit" className="w-full">Post it</Button>
+        <Button type="submit" variant="accent" size="lg" className="w-full">Post it</Button>
       </form>
     </Page>
   );

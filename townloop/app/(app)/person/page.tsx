@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ListingCard } from "@/components/Cards";
 import { BackIcon, CheckIcon, LockedChatIcon } from "@/components/Icons";
 import { useTrackRecord } from "@/components/People";
-import { Avatar, Badge, Empty, Page, Rating, SectionTitle } from "@/components/ui";
+import { Avatar, BackButton, Badge, Empty, Page, Rating, SectionTitle } from "@/components/ui";
 import { distance, fmtDistance, timeAgo } from "@/lib/format";
 import { useStore } from "@/lib/store";
 
@@ -35,11 +35,7 @@ function PersonPageInner() {
 
   return (
     <Page>
-      <div className="flex h-11 items-center">
-        <button onClick={() => router.back()} aria-label="Back" className="-ml-2.5 flex size-11 items-center justify-center">
-          <BackIcon size={22} />
-        </button>
-      </div>
+      <BackButton onClick={() => router.back()} />
 
       <div className="mt-2 flex items-center gap-4">
         <Avatar name={name} size={72} vendor={!!shop} />

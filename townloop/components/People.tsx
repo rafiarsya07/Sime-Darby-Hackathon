@@ -61,6 +61,7 @@ export function RequestCard({ r }: { r: ChatRequest }) {
             <div className="mt-3 flex flex-wrap gap-2">
               <Button
                 size="sm"
+                variant="accent"
                 onClick={() => {
                   answerRequest(r.id, true);
                   // Live version: the WhatsApp Business API introduces both sides. Demo: a deep link.
@@ -177,7 +178,7 @@ export function RespondSheet({ post, open, onClose }: { post: Post | null; open:
             </span>
           </TextField>
           <ChatPolicy name={author} />
-          <Button className="w-full" onClick={send}>Send request</Button>
+          <Button variant="accent" size="lg" className="w-full" onClick={send}>Send request</Button>
         </div>
       )}
     </Sheet>

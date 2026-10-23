@@ -70,7 +70,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
       <form onSubmit={submit} noValidate className="mt-6 space-y-5">
         <div className="flex items-center gap-4">
           <ArtTile art={art} size={72} />
-          <p className="text-[13px] text-muted">We draw an illustration from the category. Photos come next.</p>
+          <p className="text-[13px] text-muted">Demo photo picked from the category. Uploading your own photos comes next.</p>
         </div>
 
         <fieldset>
@@ -139,7 +139,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
           <input value={when} onChange={(e) => setWhen(e.target.value)} className={inputClass()} />
         </TextField>
 
-        <Button type="submit" className="w-full">Publish listing</Button>
+        <Button type="submit" variant="accent" size="lg" className="w-full">Publish listing</Button>
       </form>
     </Page>
   );

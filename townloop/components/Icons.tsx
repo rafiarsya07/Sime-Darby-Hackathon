@@ -508,3 +508,11 @@ export const StarIcon = (p: IconProps) => (
     <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z" fill={EMBER} stroke={EMBER} />
   </Svg>
 );
+
+export const ShareIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M12 15V4" />
+    <path d="M8 8l4-4 4 4" />
+    <path d="M6 11.5H5.5A1.5 1.5 0 0 0 4 13v5.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V13a1.5 1.5 0 0 0-1.5-1.5H18" />
+  </Svg>
+);
