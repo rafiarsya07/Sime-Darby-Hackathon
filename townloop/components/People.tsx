@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ArtTile } from "./Art";
 import { LockedChatIcon, MessagesIcon } from "./Icons";
 import { Sheet } from "./Sheet";
-import { Avatar, Badge, Button, inputClass, LinkButton, Rating, TextField } from "./ui";
+import { Avatar, Badge, Button, inputClass, LinkButton, Meta, Rating, TextField } from "./ui";
 import { rm, timeAgo } from "@/lib/format";
 import { useStore, whatsappLink } from "@/lib/store";
 import type { ChatRequest, Post } from "@/lib/types";
@@ -36,8 +36,11 @@ export function RequestCard({ r }: { r: ChatRequest }) {
 
   return (
     <article className="mb-3 rounded-[24px] bg-white p-4 shadow-[0_1px_0_rgba(21,23,28,0.04)]">
-      <p className="text-[12px] text-muted">
-        {r.kind === "booking" ? "Wants to book" : "Replied to your post"} · {about} · {timeAgo(r.createdAt)}
+      <p className="flex items-center justify-between gap-3 text-[12px] text-muted">
+        <span className="min-w-0 truncate">
+          <span className="font-semibold text-ink">{r.kind === "booking" ? "Wants to book" : "Replied to"}</span> {about}
+        </span>
+        <span className="shrink-0">{timeAgo(r.createdAt)}</span>
       </p>
       <div className="mt-2 flex items-start gap-3">
         <Avatar name={name} size={44} />
@@ -46,9 +49,10 @@ export function RequestCard({ r }: { r: ChatRequest }) {
             <span className="text-[15px] font-semibold">{name}</span>
             {from ? <Badge kind="verified" /> : null}
           </div>
-          <p className="text-[13px] text-muted">
-            {from?.street} · <Rating value={avg} count={reviews.length} /> · {done} done
-          </p>
+          <Meta
+            className="mt-0.5 text-[12px]"
+            items={[{ icon: "pin", text: from?.street }, { text: <Rating value={avg} count={reviews.length} /> }, { icon: "check", text: `${done} done` }]}
+          />
           {shares.length ? (
             <p className="mt-1 truncate text-[13px] text-ink-2">Shares: {shares.slice(0, 3).map((s) => s.title.split(",")[0]).join(", ")}</p>
           ) : null}
@@ -94,7 +98,7 @@ export function RequestCard({ r }: { r: ChatRequest }) {
               ) : null}
             </div>
           ) : (
-            <p className="mt-2 text-[13px] text-muted">Declined. They were not given your contact.</p>
+            <p className="mt-2 text-[13px] text-muted">Declined</p>
           )}
         </div>
       </div>
@@ -107,7 +111,7 @@ export function ChatPolicy({ name }: { name: string }) {
   return (
     <p className="flex gap-2.5 text-[13px] leading-relaxed text-muted">
       <LockedChatIcon size={18} className="mt-0.5 shrink-0" />
-      {name} sees your profile first: what you share, your ratings and past jobs. WhatsApp opens only if they accept.
+      {name} sees your profile first. WhatsApp opens only if they accept.
     </p>
   );
 }
@@ -146,17 +150,17 @@ export function RespondSheet({ post, open, onClose }: { post: Post | null; open:
       {sent ? (
         <div>
           <p className="text-[15px] leading-relaxed text-ink-2">
-            {author} will see your profile and your message. If they accept, TownLoop opens a WhatsApp chat between you.
+            {author} sees your profile and message. WhatsApp opens if they accept.
           </p>
           <Button className="mt-5 w-full" onClick={close}>Done</Button>
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="flex items-center gap-3 rounded-[10px] bg-surface p-3">
+          <div className="flex items-center gap-3 rounded-[18px] bg-surface p-3">
             <ArtTile art={post.art} size={44} className="bg-white" />
             <span className="min-w-0">
               <span className="block truncate text-[14px] font-semibold">{post.title}</span>
-              <span className="text-[13px] text-muted">{post.when}{post.budget ? ` · up to ${rm(post.budget)}` : ""}</span>
+              <span className="text-[13px] text-muted">{post.budget ? `Up to ${rm(post.budget)}` : post.when}</span>
             </span>
           </div>
           <TextField label="Your message" error={error}>
@@ -171,8 +175,8 @@ export function RespondSheet({ post, open, onClose }: { post: Post | null; open:
               className={`${inputClass(error)} h-auto py-3 leading-relaxed`}
             />
           </TextField>
-          <TextField label="Your price" hint="Optional, leave empty to agree on chat">
-            <span className={`flex h-12 items-center rounded-[10px] border border-line-strong px-3.5 focus-within:border-ink`}>
+          <TextField label="Your price" hint="Optional">
+            <span className={`flex h-12 items-center rounded-[14px] border border-line-strong bg-white px-3.5 focus-within:border-ink`}>
               <span className="mr-1.5 text-muted">RM</span>
               <input inputMode="decimal" value={offer} onChange={(e) => setOffer(e.target.value.replace(/[^\d.]/g, ""))} placeholder={post.budget ? String(post.budget) : "0"} className="min-w-0 flex-1 bg-transparent text-[15px] outline-none" />
             </span>

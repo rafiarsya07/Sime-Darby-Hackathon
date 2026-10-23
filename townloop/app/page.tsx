@@ -152,7 +152,7 @@ function Feature({ Icon, title, body, tag }: { Icon: (p: { size?: number }) => R
       <Icon size={32} />
       <h3 className="mt-3.5 text-[20px] font-semibold">
         {title}
-        {tag ? <span className="text-[14px] font-medium text-muted"> · {tag}</span> : null}
+        {tag ? <span className="ml-2 rounded-full bg-surface px-2 py-0.5 align-middle text-[12px] font-medium text-muted">{tag}</span> : null}
       </h3>
       <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{body}</p>
     </div>
@@ -161,9 +161,9 @@ function Feature({ Icon, title, body, tag }: { Icon: (p: { size?: number }) => R
 
 function PhonePreview() {
   const rows = [
-    { kind: "washer" as const, title: "Jet washer", meta: "Siti · 180 m", price: "RM30" },
-    { kind: "lawn" as const, title: "Lawn mowing", meta: "Pak Rahman · 240 m", price: "RM45" },
-    { kind: "aircond" as const, title: "Aircond service", meta: "CoolBreeze · Local", price: "RM90" },
+    { kind: "washer" as const, title: "Jet washer", meta: "Siti, 180 m", price: "RM30" },
+    { kind: "lawn" as const, title: "Lawn mowing", meta: "Pak Rahman, 240 m", price: "RM45" },
+    { kind: "aircond" as const, title: "Aircond service", meta: "CoolBreeze", price: "RM90" },
   ];
   return (
     <div className="flex flex-[1_1_300px] justify-center">

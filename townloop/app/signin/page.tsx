@@ -74,9 +74,7 @@ export default function SignInPage() {
                     <Avatar name={u.name} size={44} />
                     <span className="min-w-0 flex-1">
                       <span className="block text-[16px] font-semibold">{u.name}</span>
-                      <span className="block text-[13px] text-muted">
-                        {u.street} · {a.note}
-                      </span>
+                      <span className="block text-[13px] text-muted">{a.note}</span>
                     </span>
                   </button>
                 </li>

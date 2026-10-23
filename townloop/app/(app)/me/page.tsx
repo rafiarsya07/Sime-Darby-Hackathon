@@ -8,7 +8,7 @@ import { ChevronRightIcon, ShareIcon } from "@/components/Icons";
 import { EcoCard } from "@/components/EcoCard";
 import { coverPhoto } from "@/lib/photos";
 import { RequestCard } from "@/components/People";
-import { Avatar, Badge, Button, LinkButton, Page, SectionTitle } from "@/components/ui";
+import { Avatar, Badge, Button, LinkButton, Meta, Page, SectionTitle } from "@/components/ui";
 import { DEMO_ACCOUNTS, REWARDS } from "@/lib/data";
 import { fmtPoints, timeAgo } from "@/lib/format";
 import { useStore } from "@/lib/store";
@@ -45,7 +45,7 @@ export default function MePage() {
       <div className="mt-12 flex items-end justify-between gap-3 px-1">
         <div className="min-w-0">
           <h1 className="font-display text-[22px] font-semibold tracking-[-0.03em]">{me.name}</h1>
-          <p className="mt-0.5 text-[13px] text-muted">{me.street} · {me.phase}</p>
+          <Meta className="mt-1 text-[13px]" items={[{ icon: "pin", text: me.street }, { text: me.phase }]} />
         </div>
         <Badge kind="verified" />
       </div>
@@ -73,11 +73,10 @@ export default function MePage() {
       </SectionTitle>
       {incoming.length ? (
         <>
-          <p className="text-[13px] text-muted">Check who is asking before you accept. WhatsApp only opens after you say yes.</p>
           {incoming.map((r) => <RequestCard key={r.id} r={r} />)}
         </>
       ) : (
-        <p className="text-[14px] text-muted">Nothing waiting. When someone books your listing or answers your post, they show up here.</p>
+        <p className="rounded-[24px] bg-white px-4 py-5 text-[14px] text-muted">Nothing waiting.</p>
       )}
 
       {sent.length ? (
@@ -92,7 +91,7 @@ export default function MePage() {
                   <Link href={href} className="flex items-center justify-between gap-3 py-3 text-[14px]">
                     <span className="min-w-0">
                       <span className="block truncate font-medium">{about}</span>
-                      <span className="block text-[13px] text-muted">To {nameOf(r.toId)} · {timeAgo(r.createdAt)}</span>
+                      <Meta className="text-[12px]" items={[{ icon: "user", text: nameOf(r.toId) }, { icon: "clock", text: timeAgo(r.createdAt) }]} />
                     </span>
                     <span className={`shrink-0 text-[13px] ${r.status === "accepted" ? "font-semibold text-ember-text" : "text-muted"}`}>
                       {r.status === "pending" ? "Waiting" : r.status === "accepted" ? "Accepted" : "Declined"}
@@ -109,7 +108,7 @@ export default function MePage() {
       {mine.length ? (
         <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3">{mine.map((l) => <ListingCard key={l.id} l={l} />)}</div>
       ) : (
-        <p className="text-[14px] text-muted">You haven&apos;t listed anything yet. Your first listing earns 100 points.</p>
+        <p className="rounded-[24px] bg-white px-4 py-5 text-[14px] text-muted">Nothing listed yet. Your first listing earns +100 points.</p>
       )}
 
       {posts.length ? (
@@ -143,8 +142,7 @@ export default function MePage() {
       ) : null}
 
       <SectionTitle>Demo</SectionTitle>
-      <p className="text-[13px] text-muted">Switch person to see the other side of a request.</p>
-      <div className="mt-3 grid gap-2">
+      <div className="mt-3 grid grid-cols-1 gap-2">
         {DEMO_ACCOUNTS.map((a) => (
           <button
             key={a.id}

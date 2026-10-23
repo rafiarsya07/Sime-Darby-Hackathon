@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArtTile } from "@/components/Art";
 import { ChevronRightIcon } from "@/components/Icons";
-import { Dot, Empty, LinkButton, Page } from "@/components/ui";
+import { Empty, LinkButton, Meta, Page } from "@/components/ui";
 import { fmtDay, rm } from "@/lib/format";
 import { useStore } from "@/lib/store";
 import type { Booking } from "@/lib/types";
@@ -15,13 +15,13 @@ function statusLine(b: Booking, meId: string) {
   const provider = b.providerId === meId;
   switch (b.status) {
     case "requested":
-      return { text: provider ? "Waiting for your answer" : "Waiting for a yes", you: provider };
+      return { text: provider ? "Needs your answer" : "Waiting", you: provider };
     case "accepted":
       return { text: b.tier === "rent" ? "Ready for pick up" : "Booked", you: b.tier === "rent" };
     case "in_use":
       return { text: provider ? "Lent out" : "With you", you: provider };
     case "done":
-      return { text: "Points land in 24h", you: false };
+      return { text: "Points in 24h", you: false };
     case "closed":
       return { text: "Closed", you: false };
     default:
@@ -42,7 +42,6 @@ export default function BookingsPage() {
   return (
     <Page>
       <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">Bookings</h1>
-      <p className="mt-1 text-[14px] text-muted">Everything you&apos;re renting, lending, hiring and helping with.</p>
 
       <div role="tablist" className="mt-5 inline-flex gap-1 rounded-full bg-white p-1">
         {(["active", "past"] as const).map((t) => (
@@ -74,15 +73,15 @@ export default function BookingsPage() {
                   <ArtTile art={b.art} size={60} className="rounded-[16px]" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-semibold">{b.title.split(",")[0]}</span>
-                    <span className="block truncate text-[13px] text-muted">
-                      {TIER[b.tier]} · {provider ? `for ${other}` : `with ${other}`} · {fmtDay(b.from)} · {b.total ? rm(b.total) : "Free"}
+                    <Meta className="mt-0.5 text-[12px]" items={[{ icon: "user", text: other }, { icon: "cal", text: fmtDay(b.from) }]} />
+                    <span className={`mt-1.5 inline-block rounded-full px-2.5 py-1 text-[11px] leading-none font-semibold ${s.you ? "bg-ember text-white" : b.status === "closed" ? "bg-leaf-wash text-leaf-text" : "bg-surface text-ink-2"}`}>
+                      {s.text}
                     </span>
                   </span>
-                  <span className="flex items-center gap-2 text-right text-[13px] text-ink-2">
-                    {s.you ? <Dot /> : null}
-                    <span className="max-w-[7.5rem]">{s.text}</span>
+                  <span className="shrink-0 text-right">
+                    <span className="block font-display text-[14px] font-semibold tracking-[-0.03em]">{b.total ? rm(b.total) : "Free"}</span>
+                    <span className="block text-[11px] text-muted">{TIER[b.tier]}</span>
                   </span>
-                  <ChevronRightIcon size={18} className="shrink-0 text-muted" />
                 </Link>
               </li>
             );

@@ -16,13 +16,13 @@ export function ForecastCard({ compact = false, topic = "Aircond servicing" }: {
           Demand forecast
         </span>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold whitespace-nowrap text-white/80">
-          <span className="size-1.5 rounded-full bg-sun" /> AI preview, not live
+          AI preview
         </span>
       </div>
       <p className="relative mt-3 text-[16px] leading-snug font-semibold">{topic} in Elmina Valley is likely to double in the next two weeks.</p>
       {!compact ? (
         <p className="relative mt-1 text-[13px] leading-relaxed text-white/60">
-          A hot, dry spell is forecast. Book early or join a street group before slots fill up.
+          Hot, dry weeks ahead. Book early or join a street group.
         </p>
       ) : null}
       <div className="relative mt-4 flex h-16 items-end gap-1.5" aria-hidden="true">

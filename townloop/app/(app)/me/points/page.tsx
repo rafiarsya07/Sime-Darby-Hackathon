@@ -33,10 +33,7 @@ export default function PointsPage() {
       <div className="mt-4">
         <EcoCard name={me.name} points={pts} since={me.since} next={REWARDS.filter((r) => r.id !== "donate").sort((a, b) => a.cost - b.cost).find((r) => r.cost > pts)} />
       </div>
-      <p className="mt-3 text-[13px] text-muted">{fmtPoints(earned)} earned so far.</p>
-      <p className="mt-3 text-[13px] text-muted">
-        Points land {DISPUTE_HOURS} hours after a loop closes, so either side has time to report a problem. {POINTS_PER_RINGGIT} points is about RM1.
-      </p>
+      <p className="mt-3 text-[13px] text-muted">{fmtPoints(earned)} earned so far. Points land {DISPUTE_HOURS} hours after a booking closes.</p>
 
       <SectionTitle>Spend them</SectionTitle>
       <ul>
@@ -47,7 +44,8 @@ export default function PointsPage() {
               <span className={`flex size-12 shrink-0 items-center justify-center rounded-[16px] ${r.id === "fees" ? "bg-sun" : r.id === "donate" ? "bg-leaf-wash" : r.id === "bbq" ? "bg-ember-wash" : "bg-surface"}`}><VoucherIcon size={24} /></span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-semibold">{r.title}</span>
-                <span className="block text-[13px] text-muted">{r.place} · {fmtPoints(r.cost)} pts</span>
+                <span className="block text-[13px] text-muted">{r.place}</span>
+                <span className="mt-1 inline-block rounded-full bg-surface px-2 py-0.5 font-display text-[11px] font-semibold">{fmtPoints(r.cost)} pts</span>
               </span>
               <Button size="sm" variant={short > 0 ? "secondary" : "primary"} disabled={short > 0} onClick={() => setPick(r)}>
                 {short > 0 ? `${fmtPoints(short)} to go` : "Redeem"}
@@ -72,7 +70,7 @@ export default function PointsPage() {
       ) : null}
 
       <SectionTitle>How to earn</SectionTitle>
-      <p className="mb-2 text-[13px] text-muted">Residents earn the most. Owners and helpers earn less because they already get paid. Vendors don&apos;t earn points, they get ranked higher on Home instead.</p>
+      <p className="mb-3 text-[13px] text-muted">Residents earn the most. Vendors are ranked higher instead.</p>
       <div className="overflow-hidden rounded-[24px] bg-white">
         <table className="w-full text-left text-[14px]">
           <thead className="bg-surface text-[12px] text-muted">

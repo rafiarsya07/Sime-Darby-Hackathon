@@ -7,7 +7,7 @@ import { ArtPhoto } from "@/components/Art";
 import { ForecastCard } from "@/components/Forecast";
 import { ChatPolicy, useTrackRecord } from "@/components/People";
 import { ArrowRightIcon, BackIcon, HeartIcon, ShareIcon } from "@/components/Icons";
-import { Avatar, Badge, Button, Empty, inputClass, LinkButton, Page, Rating, Stars, TextField } from "@/components/ui";
+import { Avatar, Badge, Button, Empty, inputClass, LinkButton, Meta, Page, Rating, Stars, TextField } from "@/components/ui";
 import { vendorKindOf } from "@/lib/data";
 import { addDays, distance, fmtDay, fmtDistance, isoDate, nextSaturday, rm, unitLabel, units } from "@/lib/format";
 import { useStore } from "@/lib/store";
@@ -128,9 +128,7 @@ function ListingPageInner() {
               {!l.free ? <span className="text-[14px] text-muted">per {unitLabel[l.unit]}</span> : <span className="text-[14px] text-muted">to borrow</span>}
               {l.groupPrice ? <span className="rounded-full bg-sun px-2.5 py-1 text-[12px] font-semibold">{rm(l.groupPrice)} in a street group</span> : null}
             </p>
-            <p className="mt-1.5 flex items-center gap-2 text-[13px] text-muted">
-              <Rating value={l.rating} count={l.reviews} stars /> · {l.done} {l.tier === "rent" ? "loops" : "jobs"} done
-            </p>
+            <Meta className="mt-2 text-[13px]" items={[{ text: <Rating value={l.rating} count={l.reviews} stars /> }, { icon: "check", text: `${l.done} ${l.tier === "rent" ? "loops" : "jobs"} done` }]} />
             <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{l.description}</p>
 
             {/* Who */}
@@ -143,9 +141,10 @@ function ListingPageInner() {
                   {kind ? <Badge kind={kind} /> : null}
                   <Stars value={track.avg || l.rating} size={13} />
                 </span>
-                <span className="mt-1 block truncate text-[13px] text-muted">
-                  {resident ? `${resident.street}${m ? ` · ${fmtDistance(m)} away` : ""}` : v ? `${v.area} · ${v.checks.join(", ")}` : ""}
-                </span>
+                <Meta
+                  className="mt-1 text-[12px]"
+                  items={resident ? [{ icon: "pin", text: resident.street }, m ? { text: `${fmtDistance(m)} away` } : null] : v ? [{ icon: "pin", text: v.area }] : []}
+                />
               </span>
             </Link>
 
@@ -208,7 +207,7 @@ function ListingPageInner() {
                     <input type="checkbox" checked={recurring} onChange={(e) => setRecurring(e.target.checked)} className="mt-1 size-4 accent-[#F26B2E]" />
                     <span>
                       <span className="font-medium">Repeat {l.recurring.toLowerCase()}</span>
-                      <span className="block text-muted">Earn 30 Eco points every visit.</span>
+                      <span className="block text-muted">+30 points every visit</span>
                     </span>
                   </label>
                 ) : null}
@@ -225,7 +224,7 @@ function ListingPageInner() {
                   </TextField>
                 ) : null}
                 {error && message.trim() ? <p className="text-[13px] text-[#B42318]">{error}</p> : null}
-                {!l.facility ? <ChatPolicy name={ownerName} /> : <p className="text-[13px] text-muted">SDP facilities confirm straight away.</p>}
+                {!l.facility ? <ChatPolicy name={ownerName} /> : <p className="text-[13px] text-muted">Confirmed straight away.</p>}
 
                 <div className="fixed inset-x-0 bottom-[92px] z-20 px-4 md:static md:px-0">
                   <button
@@ -240,10 +239,9 @@ function ListingPageInner() {
                       <ArrowRightIcon size={16} />
                     </span>
                   </button>
-                  <p className="mx-auto mt-1.5 max-w-2xl text-center text-[11px] text-muted md:text-left">
-                    {isDay ? `${n} ${unitLabel[l.unit]}${n > 1 ? "s" : ""}` : l.tier === "rent" ? "One slot" : `Per ${unitLabel[l.unit]}`}
-                    {l.deposit ? ` · ${rm(l.deposit)} deposit held, not charged` : ""}
-                  </p>
+                  {l.deposit ? (
+                    <p className="mx-auto mt-1.5 max-w-2xl text-center text-[11px] text-muted md:text-left">{rm(l.deposit)} deposit held, not charged</p>
+                  ) : null}
                 </div>
               </div>
             )}

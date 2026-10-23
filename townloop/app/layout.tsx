@@ -10,7 +10,7 @@ import "./globals.css";
 import { StoreProvider } from "@/lib/store";
 
 export const metadata: Metadata = {
-  title: { default: "TownLoop", template: "%s · TownLoop" },
+  title: { default: "TownLoop", template: "%s | TownLoop" },
   description: "Lend, borrow and help out with verified neighbours in Elmina Valley.",
 };
 

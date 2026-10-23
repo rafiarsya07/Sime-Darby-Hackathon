@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArtPhoto, ArtTile } from "./Art";
 import { HeartIcon } from "./Icons";
-import { Badge, Button, Rating } from "./ui";
+import { Badge, Button, Meta, Rating } from "./ui";
 import { vendorKindOf } from "@/lib/data";
 import { distance, fmtDay, fmtDistance, rm, timeAgo, unitLabel } from "@/lib/format";
 import { useStore } from "@/lib/store";
@@ -25,8 +25,8 @@ export function ListingCard({ l, boosted = false, size = "md" }: { l: Listing; b
   const lg = size === "lg";
 
   return (
-    <div className="group relative rounded-[24px] bg-white p-2 shadow-[0_1px_0_rgba(21,23,28,0.04)] transition-shadow hover:shadow-[0_16px_32px_-18px_rgba(21,23,28,0.35)]">
-      <Link href={`/item?id=${l.id}`} className="block">
+    <div className="group relative h-full rounded-[24px] bg-white p-2 shadow-[0_1px_0_rgba(21,23,28,0.04)] transition-shadow hover:shadow-[0_16px_32px_-18px_rgba(21,23,28,0.35)]">
+      <Link href={`/item?id=${l.id}`} className="flex h-full flex-col">
         <div className={`relative overflow-hidden rounded-[18px] bg-surface ${lg ? "aspect-[16/11]" : "aspect-square"}`}>
           <ArtPhoto art={l.art} w={lg ? 900 : 500} h={lg ? 620 : 500} alt={l.title} iconSize={64} />
           {l.rating ? (
@@ -42,13 +42,13 @@ export function ListingCard({ l, boosted = false, size = "md" }: { l: Listing; b
             {l.facility ? <Badge kind="facility" className="bg-white shadow-sm" /> : null}
           </span>
         </div>
-        <div className={lg ? "px-2.5 pt-3 pb-1.5" : "px-1.5 pt-2.5 pb-1"}>
+        <div className={`flex flex-1 flex-col ${lg ? "px-2.5 pt-3 pb-1.5" : "px-1.5 pt-2.5 pb-1"}`}>
           <p className={`line-clamp-2 leading-snug font-semibold ${lg ? "text-[17px]" : "text-[14px]"}`}>{l.title}</p>
-          <p className={`mt-0.5 truncate text-muted ${lg ? "text-[13px]" : "text-[12px]"}`}>
-            {owner}
-            {m ? ` · ${fmtDistance(m)}` : v ? ` · ${v.area}` : ""}
-          </p>
-          <div className={`flex items-end justify-between gap-2 ${lg ? "mt-3 pr-12" : "mt-2 pr-10"}`}>
+          <Meta
+            className={`mt-1 flex-nowrap overflow-hidden ${lg ? "text-[13px]" : "text-[12px]"}`}
+            items={lg ? [{ icon: "user", text: owner }, m ? { icon: "pin", text: fmtDistance(m) } : null] : [{ icon: "user", text: owner }]}
+          />
+          <div className={`mt-auto flex items-end justify-between gap-2 ${lg ? "pt-3 pr-12" : "pt-2 pr-10"}`}>
             <p className="min-w-0">
               <span className={`font-display font-semibold tracking-[-0.03em] ${lg ? "text-[20px]" : "text-[15px]"}`}>{l.free ? "Free" : rm(l.price)}</span>
               {!l.free ? <span className={`text-muted ${lg ? "text-[13px]" : "text-[11px]"}`}>/{unitLabel[l.unit]}</span> : null}
@@ -88,18 +88,22 @@ export function PostCard({ p, onRespond }: { p: Post; onRespond?: () => void }) 
       <div className="flex gap-3.5">
         <ArtTile art={p.art} size={68} className="rounded-[18px]" />
         <div className="min-w-0 flex-1">
-          <p className="flex flex-wrap items-center gap-1.5 text-[12px] text-muted">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-muted">
             <span className={`rounded-full px-2 py-0.5 font-semibold ${p.tier === "rent" ? "bg-sun-wash text-ink" : p.tier === "gigs" ? "bg-leaf-wash text-leaf-text" : "bg-ember-wash text-ember-text"}`}>{TIER_WORD[p.tier]}</span>
-            {mine ? "You" : author?.name} · {timeAgo(p.createdAt)}
+            <span>{mine ? "You" : author?.name}</span>
+            <span>{timeAgo(p.createdAt)}</span>
           </p>
           <Link href={`/post?id=${p.id}`} className="mt-0.5 block text-[15px] leading-snug font-semibold hover:underline">
             {p.title}
           </Link>
           <p className="mt-1 line-clamp-2 text-[14px] text-ink-2">{p.details}</p>
-          <p className="mt-1.5 text-[13px] text-muted">
-            {p.when} · {fmtDay(p.from)}
-            {p.budget ? ` · up to ${rm(p.budget)}` : p.budget === 0 ? " · hoping to borrow free" : ""}
-          </p>
+          <Meta
+            className="mt-2 text-[12px]"
+            items={[
+              { icon: "cal", text: fmtDay(p.from) },
+              { icon: "tag", text: p.budget ? `Up to ${rm(p.budget)}` : "Free" },
+            ]}
+          />
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {mine ? (
               <Link href={`/post?id=${p.id}`} className="text-[14px] font-semibold underline underline-offset-2">
@@ -108,7 +112,7 @@ export function PostCard({ p, onRespond }: { p: Post; onRespond?: () => void }) 
             ) : p.status !== "open" ? (
               <span className="text-[13px] text-muted">Matched with a neighbour</span>
             ) : replied ? (
-              <span className="text-[13px] text-muted">Request sent. {author?.name} will see your profile first.</span>
+              <span className="rounded-full bg-leaf-wash px-3 py-1.5 text-[12px] font-semibold text-leaf-text">Request sent</span>
             ) : onRespond ? (
               <Button size="sm" variant="accent" onClick={onRespond}>
                 Request to chat

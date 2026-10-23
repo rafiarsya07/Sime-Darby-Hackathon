@@ -7,7 +7,7 @@ import { ListingCard } from "@/components/Cards";
 import { BackIcon, CheckIcon, LockedChatIcon } from "@/components/Icons";
 import { useTrackRecord } from "@/components/People";
 import { artPhoto, coverPhoto } from "@/lib/photos";
-import { Avatar, BackButton, Badge, Empty, Page, Rating, SectionTitle } from "@/components/ui";
+import { Avatar, BackButton, Badge, Empty, Meta, Page, Rating, SectionTitle } from "@/components/ui";
 import { distance, fmtDistance, timeAgo } from "@/lib/format";
 import { useStore } from "@/lib/store";
 
@@ -53,10 +53,10 @@ function PersonPageInner() {
           <h1 className="font-display text-[22px] leading-tight font-semibold tracking-[-0.03em]">{name}{self ? " (you)" : ""}</h1>
           {person ? <Badge kind="verified" /> : <Badge kind={shop!.kind === "local" ? "local" : "outside"} />}
         </div>
-        <p className="mt-1 text-[13px] text-muted">
-          {person ? `${person.street} · ${person.phase}` : shop!.area}
-          {person && me && !self ? ` · ${fmtDistance(distance(me, person))} away` : ""}
-        </p>
+        <Meta
+          className="mt-1.5 text-[13px]"
+          items={person ? [{ icon: "pin", text: person.street }, { text: person.phase }, me && !self ? { text: `${fmtDistance(distance(me, person))} away` } : null] : [{ icon: "pin", text: shop!.area }]}
+        />
       </div>
 
       {person?.bio ? <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{person.bio}</p> : null}
@@ -78,7 +78,7 @@ function PersonPageInner() {
         </>
       ) : (
         <p className="mt-4 flex items-center gap-2 text-[13px] text-muted">
-          <LockedChatIcon size={18} /> {person?.tenure} verified with SDP PRIME. Phone number stays hidden until they accept a chat.
+          <LockedChatIcon size={18} /> {person?.tenure}, verified with SDP PRIME
         </p>
       )}
 
@@ -99,7 +99,7 @@ function PersonPageInner() {
                 <Rating value={r.stars} />
               </div>
               <p className="mt-1 text-[14px] text-ink-2">{r.text}</p>
-              <p className="mt-1 text-[12px] text-muted">{nameOf(r.byId)} · {timeAgo(r.at)}</p>
+              <Meta className="mt-1.5 text-[12px]" items={[{ icon: "user", text: nameOf(r.byId) }, { icon: "clock", text: timeAgo(r.at) }]} />
             </li>
           ))}
         </ul>

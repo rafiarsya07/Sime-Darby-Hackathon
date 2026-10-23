@@ -41,7 +41,7 @@ function PostPageInner() {
       <div className="mt-2 flex gap-4">
         <ArtTile art={p.art} size={64} />
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] text-muted">{TIER_WORD[p.tier]} · {timeAgo(p.createdAt)}</p>
+          <p className="flex flex-wrap items-center gap-2 text-[12px] text-muted"><span className="rounded-full bg-sun-wash px-2 py-0.5 font-semibold text-ink">{TIER_WORD[p.tier]}</span>{timeAgo(p.createdAt)}</p>
           <h1 className="mt-0.5 text-[22px] leading-tight font-semibold tracking-[-0.02em]">{p.title}</h1>
         </div>
       </div>
@@ -65,18 +65,18 @@ function PostPageInner() {
           <SectionTitle>{replies.length ? `Neighbours who can help (${replies.length})` : "No replies yet"}</SectionTitle>
           {replies.length ? (
             <>
-              <p className="text-[13px] text-muted">Look at their profile and what they share. Accepting opens WhatsApp with that person only.</p>
+              <p className="mb-3 text-[13px] text-muted">Accepting opens WhatsApp with that person only.</p>
               {replies.map((r) => <RequestCard key={r.id} r={r} />)}
             </>
           ) : (
-            <p className="text-[14px] text-muted">Neighbours who have it will request to chat. You&apos;ll see them on Me.</p>
+            <p className="rounded-[24px] bg-white px-4 py-5 text-[14px] text-muted">Replies show up here and on Me.</p>
           )}
         </>
       ) : p.status !== "open" ? (
         <p className="mt-6 text-[14px] text-muted">{author?.name} already found someone.</p>
       ) : myReply ? (
-        <p className="mt-6 rounded-[10px] bg-surface px-4 py-3 text-[14px]">
-          You requested to chat. {author?.name} sees your profile and decides. {myReply.status === "accepted" ? "Accepted, check Bookings." : ""}
+        <p className="mt-6 rounded-[20px] bg-leaf-wash px-4 py-3.5 text-[14px] font-medium text-leaf-text">
+          {myReply.status === "accepted" ? "Accepted. Find it in Bookings." : `Request sent. ${author?.name} decides next.`}
         </p>
       ) : (
         <Button variant="accent" size="lg" className="mt-6 w-full" onClick={() => setOpen(true)}>Request to chat with {author?.name}</Button>

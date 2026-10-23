@@ -30,7 +30,6 @@ export default function PostsPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">Posts</h1>
-          <p className="mt-1 text-[14px] text-muted">What neighbours are looking for. Have it? Request to chat.</p>
         </div>
         <LinkButton href="/posts/new" size="sm" variant="accent" className="shrink-0">
           <AddIcon size={16} /> Post

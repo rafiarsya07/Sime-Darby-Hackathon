@@ -62,15 +62,12 @@ export function ListingForm({ kind }: { kind: Kind }) {
   return (
     <Page>
       <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">{kind === "item" ? "Lend an item or space" : "Offer a service"}</h1>
-      <p className="mt-1 text-[14px] text-muted">
-        Neighbours send a request first. You see their profile and choose who to chat with.
-        {firstListing ? " Your first listing earns 100 points." : ""}
-      </p>
+      {firstListing ? <p className="mt-2 inline-block rounded-full bg-leaf-wash px-3 py-1 text-[12px] font-semibold text-leaf-text">First listing earns +100 points</p> : null}
 
       <form onSubmit={submit} noValidate className="mt-6 space-y-5">
         <div className="flex items-center gap-4">
           <ArtTile art={art} size={72} />
-          <p className="text-[13px] text-muted">Demo photo picked from the category. Uploading your own photos comes next.</p>
+          <p className="text-[13px] text-muted">Photo comes from the category for now.</p>
         </div>
 
         <fieldset>
@@ -106,7 +103,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
         {kind === "item" ? (
           <label className="flex items-center gap-3 text-[15px]">
             <input type="checkbox" checked={free} onChange={(e) => { setFree(e.target.checked); setErrors((x) => ({ ...x, price: undefined })); }} className="size-5 accent-[#1a1a1a]" />
-            Lend it free. You earn 40 points each time instead of rent.
+            Lend it free and earn +40 points each time
           </label>
         ) : null}
 
@@ -127,7 +124,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
         ) : null}
 
         {kind === "item" ? (
-          <TextField label="Refundable deposit" hint="Optional, held in escrow">
+          <TextField label="Refundable deposit" hint="Optional">
             <span className="flex h-12 items-center rounded-[14px] border border-line-strong bg-white px-3.5 focus-within:border-ink">
               <span className="mr-1.5 text-muted">RM</span>
               <input inputMode="decimal" value={deposit} onChange={(e) => setDeposit(e.target.value.replace(/[^\d.]/g, ""))} placeholder="50" className="min-w-0 flex-1 bg-transparent text-[15px] outline-none" />

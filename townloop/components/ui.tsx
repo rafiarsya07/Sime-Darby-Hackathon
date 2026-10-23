@@ -191,7 +191,7 @@ export function MoreLink({ href, children = "See all" }: { href: string; childre
 
 export function Empty({ title, children }: { title: string; children?: ReactNode }) {
   return (
-    <div className="mt-3 rounded-[24px] border border-dashed border-line-strong px-6 py-10 text-center">
+    <div className="mt-3 rounded-[24px] bg-white/70 px-6 py-10 text-center">
       <p className="font-semibold">{title}</p>
       {children ? <div className="mt-1 text-[14px] text-muted">{children}</div> : null}
     </div>
@@ -201,7 +201,7 @@ export function Empty({ title, children }: { title: string; children?: ReactNode
 /** Grey stand in bar for actions the other person would take on their own phone. */
 export function DemoNote({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[16px] border border-dashed border-line-strong bg-white/60 px-3.5 py-3 text-[13px] text-ink-2">
+    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[16px] bg-sun-wash px-3.5 py-3 text-[13px] text-ink-2">
       <span className="rounded-full bg-sun px-2 py-0.5 font-display text-[10px] font-semibold tracking-[0.04em] text-ink uppercase">Demo</span>
       {children}
     </div>
@@ -223,3 +223,32 @@ export function TextField({ label, hint, error, children }: { label: string; hin
 
 export const inputClass = (bad?: string | boolean) =>
   `h-12 w-full rounded-[14px] border bg-white px-3.5 text-[15px] outline-none placeholder:text-muted focus:border-ink ${bad ? "border-[#B42318]" : "border-line-strong"}`;
+
+type MetaIcon = "pin" | "clock" | "cal" | "user" | "tag" | "check";
+const META_PATHS: Record<MetaIcon, ReactNode> = {
+  pin: <path d="M10 17.5s5.5-4.6 5.5-9a5.5 5.5 0 0 0-11 0c0 4.4 5.5 9 5.5 9zM10 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />,
+  clock: <path d="M10 17.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15zM10 6v4l2.5 1.8" />,
+  cal: <path d="M4 5.5h12v11H4zM4 9h12M7.5 3.5v3M12.5 3.5v3" />,
+  user: <path d="M10 9.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM4.5 17c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5" />,
+  tag: <path d="M3.5 10.2V4.5a1 1 0 0 1 1-1h5.7l6.3 6.3a1 1 0 0 1 0 1.4l-5.3 5.3a1 1 0 0 1-1.4 0zM7.5 7.5h.01" />,
+  check: <path d="M4.5 10.5l3.5 3.5 7.5-8" />,
+};
+
+/** Facts in a row, separated by space and a tiny icon instead of dots. */
+export function Meta({ items, className = "" }: { items: (false | null | undefined | { icon?: MetaIcon; text: ReactNode })[]; className?: string }) {
+  const list = items.filter(Boolean) as { icon?: MetaIcon; text: ReactNode }[];
+  return (
+    <span className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-muted ${className}`}>
+      {list.map((it, i) => (
+        <span key={i} className="inline-flex min-w-0 items-center gap-1">
+          {it.icon ? (
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0 opacity-80">
+              {META_PATHS[it.icon]}
+            </svg>
+          ) : null}
+          <span className="truncate">{it.text}</span>
+        </span>
+      ))}
+    </span>
+  );
+}

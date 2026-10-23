@@ -101,12 +101,12 @@ export default function HomePage() {
       <div className="flex items-center gap-3">
         <Avatar name={me.name} size={52} />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13px] text-muted">{greeting()} · {me.precinct}</p>
+          <p className="truncate text-[13px] text-muted">{greeting()}</p>
           <h1 className="font-display text-[22px] leading-tight font-semibold tracking-[-0.03em] sm:text-[26px]">Hi, {me.name.split(" ").pop()}</h1>
         </div>
         <Link href="/me" aria-label={pending ? `${pending} new requests` : "Notifications"} className="press relative flex size-12 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_1px_0_rgba(21,23,28,0.05)]">
           <AlertsIcon size={21} />
-          {pending ? <span className="absolute top-2 right-2.5 size-2.5 rounded-full bg-ember ring-2 ring-white" /> : null}
+          {pending ? <span className="absolute -top-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white ring-2 ring-canvas">{pending}</span> : null}
         </Link>
       </div>
 
@@ -137,7 +137,7 @@ export default function HomePage() {
           </span>
           <span className="min-w-0 flex-1 text-[14px] leading-snug">
             <span className="block font-semibold">{pending} {pending === 1 ? "neighbour wants" : "neighbours want"} to chat</span>
-            <span className="block text-[12px] text-white/60">Check their profile before you accept</span>
+            <span className="block text-[12px] text-white/60">Review before you accept</span>
           </span>
           <span className="flex size-10 items-center justify-center rounded-full bg-ember"><ArrowRightIcon size={18} /></span>
         </Link>
@@ -168,15 +168,13 @@ export default function HomePage() {
               <button onClick={() => { setTab("vendors"); setCat(null); }} className="press relative h-[148px] overflow-hidden rounded-[24px] bg-sun p-4 text-left text-ink">
                 <span className="relative z-10 block font-display text-[11px] leading-tight font-semibold tracking-[0.03em] uppercase">Street<br />group buys</span>
                 <span className="relative z-10 mt-2 block font-display text-[26px] font-bold tracking-[-0.04em]">{aircond?.groupPrice ? rm(aircond.groupPrice) : "Save"}</span>
-                <span className="relative z-10 block text-[12px] text-ink/70">aircond wash, each</span>
+                <span className="relative z-10 block text-[12px] text-ink/70">aircond wash</span>
                 <span className="absolute right-3 bottom-3 z-10 flex size-10 items-center justify-center rounded-full bg-night text-white"><ArrowRightIcon size={18} /></span>
-                <span aria-hidden="true" className="pointer-events-none absolute -bottom-9 -left-1 font-display text-[64px] font-bold tracking-[-0.06em] text-ink/[0.06]">loop</span>
               </button>
               <Link href="/posts/new" className="press relative h-[148px] overflow-hidden rounded-[24px] bg-ember p-4 text-white">
                 <span className="relative z-10 block font-display text-[11px] leading-tight font-semibold tracking-[0.03em] uppercase">Need<br />something?</span>
                 <span className="relative z-10 mt-2 block font-display text-[19px] leading-[1.1] font-bold tracking-[-0.03em]">Post a<br />request</span>
                 <span className="absolute right-3 bottom-3 z-10 flex size-10 items-center justify-center rounded-full bg-white text-ink"><ArrowRightIcon size={18} /></span>
-                <span aria-hidden="true" className="pointer-events-none absolute -bottom-9 -left-1 font-display text-[64px] font-bold tracking-[-0.06em] text-white/[0.1]">ask</span>
               </Link>
             </div>
           ) : null}
@@ -245,14 +243,14 @@ export default function HomePage() {
           ) : (
             <>
               {tab === "vendors" ? (
-                <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
                   <ForecastCard />
                   <GroupBuys inline />
                 </div>
               ) : null}
               {tab === "gigs" ? (
                 <p className="mt-4 text-[14px] text-muted">
-                  Can&apos;t find it? <Link href="/posts/new" className="font-semibold text-ink underline underline-offset-2">Post what you need</Link> and helpers reply to you.
+                  Can&apos;t find it? <Link href="/posts/new" className="font-semibold text-ink underline underline-offset-2">Post what you need</Link>
                 </p>
               ) : null}
               <div className="mt-5">
@@ -273,7 +271,7 @@ function GroupBuys({ inline = false }: { inline?: boolean }) {
   const { state, listing, me } = useStore();
   if (!state.groups.length) return null;
   const body = (
-    <ul className={inline ? "space-y-2" : "grid gap-2 lg:grid-cols-2"}>
+    <ul className={inline ? "grid grid-cols-1 gap-2" : "grid grid-cols-1 gap-2 lg:grid-cols-2"}>
       {state.groups.map((g) => {
         const l = listing(g.listingId);
         if (!l) return null;
@@ -281,19 +279,20 @@ function GroupBuys({ inline = false }: { inline?: boolean }) {
         const pct = Math.min(100, (g.joined.length / g.target) * 100);
         return (
           <li key={g.id}>
-            <Link href={`/item?id=${l.id}`} className="press flex items-center gap-3.5 rounded-[20px] bg-white p-2.5 pr-4 hover:bg-white/80">
+            <Link href={`/item?id=${l.id}`} className="press flex min-w-0 items-center gap-3 rounded-[20px] bg-white p-2.5 pr-3.5 hover:bg-white/80">
               <ArtTile art={l.art} size={60} className="rounded-[16px]" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[14px] font-semibold">{l.title}</span>
-                <span className="block text-[12px] text-muted">
-                  {g.joined.length} of {g.target} homes · {fmtDay(g.date)}
-                  {joined ? " · you're in" : ""}
+                <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-muted">
+                  <span>{g.joined.length} of {g.target} homes</span>
+                  <span>{fmtDay(g.date)}</span>
+                  {joined ? <span className="rounded-full bg-leaf-wash px-2 py-0.5 font-semibold text-leaf-text">Joined</span> : null}
                 </span>
                 <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-sun-wash">
                   <span className="block h-full rounded-full bg-sun" style={{ width: `${pct}%` }} />
                 </span>
               </span>
-              <span className="text-right whitespace-nowrap">
+              <span className="shrink-0 text-right whitespace-nowrap">
                 <span className="block font-display text-[14px] font-semibold tracking-[-0.03em]">{rm(l.groupPrice ?? l.price)}</span>
                 <span className="block text-[11px] text-muted line-through">{rm(l.price)}</span>
               </span>
