@@ -41,7 +41,7 @@ export default function Landing() {
           <section className="flex flex-wrap items-center gap-14 py-14 md:py-24">
             <div className="min-w-0 flex-[999_1_440px]">
               <p className="text-[15px] text-muted">For residents of Elmina Valley</p>
-              <h1 className="mt-3.5 text-[clamp(38px,5vw,60px)] leading-[1.05] font-semibold tracking-[-0.03em]">
+              <h1 className="mt-3.5 font-display text-[clamp(34px,4.6vw,58px)] leading-[1.05] font-semibold tracking-[-0.05em]">
                 Borrow from next door, not from a store.
               </h1>
               <p className="mt-5 max-w-[32rem] text-[18px] leading-relaxed text-ink-2">
@@ -61,7 +61,7 @@ export default function Landing() {
 
         <section id="how" className="border-t border-line">
           <Container className="py-16 md:py-24">
-            <h2 className="text-[clamp(26px,3vw,34px)] font-semibold tracking-[-0.02em]">How it works</h2>
+            <h2 className="font-display text-[clamp(24px,2.8vw,32px)] font-semibold tracking-[-0.04em]">How it works</h2>
             <ol className="mt-10 grid gap-x-10 gap-y-9 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
               {STEPS.map((s, i) => (
                 <li key={s.title}>
@@ -84,7 +84,7 @@ export default function Landing() {
 
         <Container>
           <section id="trust" className="flex flex-wrap gap-x-16 gap-y-8 py-16 md:py-24">
-            <h2 className="flex-[1_1_280px] text-[clamp(26px,3vw,34px)] leading-tight font-semibold tracking-[-0.02em]">
+            <h2 className="flex-[1_1_280px] font-display text-[clamp(24px,2.8vw,32px)] leading-tight font-semibold tracking-[-0.04em]">
               Lending your things shouldn&apos;t feel risky.
             </h2>
             <ul className="flex-[999_1_440px]">
@@ -101,7 +101,7 @@ export default function Landing() {
         <section id="points" className="border-t border-line">
           <Container className="flex flex-wrap items-center gap-x-16 gap-y-8 py-16 md:py-24">
             <div className="min-w-0 flex-[1_1_360px]">
-              <h2 className="text-[clamp(26px,3vw,34px)] leading-tight font-semibold tracking-[-0.02em]">Every loop earns Eco points.</h2>
+              <h2 className="font-display text-[clamp(24px,2.8vw,32px)] leading-tight font-semibold tracking-[-0.04em]">Every loop earns Eco points.</h2>
               <p className="mt-3 max-w-[30rem] text-[16px] leading-relaxed text-ink-2">
                 Residents earn the most for renting, hiring and lending free. Spend points at Elmina Lakeside Mall, or take them off your maintenance fees.
               </p>
@@ -122,7 +122,7 @@ export default function Landing() {
         <section id="sdp" className="bg-ink text-white">
           <Container className="flex flex-wrap items-center justify-between gap-x-12 gap-y-6 py-16 md:py-20">
             <div className="min-w-0 flex-[999_1_420px]">
-              <h2 className="text-[clamp(26px,3vw,34px)] leading-tight font-semibold tracking-[-0.02em]">
+              <h2 className="font-display text-[clamp(24px,2.8vw,32px)] leading-tight font-semibold tracking-[-0.04em]">
                 One QR poster per clubhouse. That&apos;s the rollout.
               </h2>
               <p className="mt-2.5 max-w-[34rem] text-[16px] leading-relaxed text-[#C9C9C9]">

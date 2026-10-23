@@ -35,7 +35,7 @@ export function RequestCard({ r }: { r: ChatRequest }) {
   const name = nameOf(r.fromId);
 
   return (
-    <article className="border-b border-line py-4 last:border-b-0">
+    <article className="mb-3 rounded-[24px] bg-white p-4 shadow-[0_1px_0_rgba(21,23,28,0.04)]">
       <p className="text-[12px] text-muted">
         {r.kind === "booking" ? "Wants to book" : "Replied to your post"} · {about} · {timeAgo(r.createdAt)}
       </p>
@@ -52,7 +52,7 @@ export function RequestCard({ r }: { r: ChatRequest }) {
           {shares.length ? (
             <p className="mt-1 truncate text-[13px] text-ink-2">Shares: {shares.slice(0, 3).map((s) => s.title.split(",")[0]).join(", ")}</p>
           ) : null}
-          <p className="mt-2 rounded-[10px] bg-surface px-3 py-2 text-[14px] leading-snug">
+          <p className="mt-2 rounded-[16px] rounded-tl-[4px] bg-surface px-3.5 py-2.5 text-[14px] leading-snug">
             {r.message}
             {r.offer !== undefined ? <span className="mt-1 block font-semibold">Offer: {r.offer ? rm(r.offer) : "Free"}</span> : null}
           </p>

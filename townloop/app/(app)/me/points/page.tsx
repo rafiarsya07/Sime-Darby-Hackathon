@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { EcoPointsIcon, VoucherIcon } from "@/components/Icons";
 import { Sheet } from "@/components/Sheet";
-import { Button, Page, SectionTitle } from "@/components/ui";
+import { Button, Page, PageTitle, SectionTitle } from "@/components/ui";
+import { EcoCard } from "@/components/EcoCard";
 import { REWARDS } from "@/lib/data";
 import { fmtPoints, rm, timeAgo } from "@/lib/format";
 import { DISPUTE_HOURS, EARN_TABLE, POINTS_PER_RINGGIT } from "@/lib/points";
@@ -28,15 +29,11 @@ export default function PointsPage() {
 
   return (
     <Page>
-      <h1 className="text-[24px] font-semibold tracking-[-0.02em]">Eco points</h1>
-
-      <div className="mt-4 flex items-center gap-4 rounded-[12px] bg-surface px-4 py-5">
-        <EcoPointsIcon size={44} />
-        <div>
-          <p className="text-[32px] leading-none font-semibold tabular-nums" data-testid="balance">{fmtPoints(pts)}</p>
-          <p className="mt-1 text-[13px] text-muted">Worth about {rm(Math.floor(pts / POINTS_PER_RINGGIT))} · {fmtPoints(earned)} earned so far</p>
-        </div>
+      <PageTitle>Eco points</PageTitle>
+      <div className="mt-4">
+        <EcoCard name={me.name} points={pts} since={me.since} next={REWARDS.filter((r) => r.id !== "donate").sort((a, b) => a.cost - b.cost).find((r) => r.cost > pts)} />
       </div>
+      <p className="mt-3 text-[13px] text-muted">{fmtPoints(earned)} earned so far.</p>
       <p className="mt-3 text-[13px] text-muted">
         Points land {DISPUTE_HOURS} hours after a loop closes, so either side has time to report a problem. {POINTS_PER_RINGGIT} points is about RM1.
       </p>
@@ -46,8 +43,8 @@ export default function PointsPage() {
         {REWARDS.map((r) => {
           const short = r.cost - pts;
           return (
-            <li key={r.id} className="flex items-center gap-3 border-b border-line py-3 last:border-b-0">
-              <VoucherIcon size={28} />
+            <li key={r.id} className="mb-2 flex items-center gap-3 rounded-[22px] bg-white p-3">
+              <span className={`flex size-12 shrink-0 items-center justify-center rounded-[16px] ${r.id === "fees" ? "bg-sun" : r.id === "donate" ? "bg-leaf-wash" : r.id === "bbq" ? "bg-ember-wash" : "bg-surface"}`}><VoucherIcon size={24} /></span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-semibold">{r.title}</span>
                 <span className="block text-[13px] text-muted">{r.place} · {fmtPoints(r.cost)} pts</span>
@@ -63,7 +60,7 @@ export default function PointsPage() {
       {myCodes.length ? (
         <>
           <SectionTitle>Your codes</SectionTitle>
-          <ul>
+          <ul className="rounded-[24px] bg-white px-4">
             {myCodes.map((c) => (
               <li key={c.id} className="flex justify-between border-b border-line py-3 text-[14px] last:border-b-0">
                 <span>{REWARDS.find((r) => r.id === c.rewardId)?.title}</span>
@@ -76,7 +73,7 @@ export default function PointsPage() {
 
       <SectionTitle>How to earn</SectionTitle>
       <p className="mb-2 text-[13px] text-muted">Residents earn the most. Owners and helpers earn less because they already get paid. Vendors don&apos;t earn points, they get ranked higher on Home instead.</p>
-      <div className="overflow-hidden rounded-[12px] border border-line">
+      <div className="overflow-hidden rounded-[24px] bg-white">
         <table className="w-full text-left text-[14px]">
           <thead className="bg-surface text-[12px] text-muted">
             <tr><th className="px-3 py-2 font-medium">Tier</th><th className="px-3 py-2 font-medium">Who</th><th className="px-3 py-2 font-medium">Points</th></tr>
@@ -94,7 +91,7 @@ export default function PointsPage() {
       </div>
 
       <SectionTitle>History</SectionTitle>
-      <ul>
+      <ul className="rounded-[24px] bg-white px-4">
         {history.map((p) => (
           <li key={p.id} className="flex items-baseline justify-between gap-4 border-b border-line py-3 text-[14px] last:border-b-0">
             <span className="min-w-0">

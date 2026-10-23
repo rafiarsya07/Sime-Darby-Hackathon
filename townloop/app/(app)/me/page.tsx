@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArtTile } from "@/components/Art";
 import { ListingCard } from "@/components/Cards";
-import { ChevronRightIcon, EcoPointsIcon } from "@/components/Icons";
+import { ChevronRightIcon, ShareIcon } from "@/components/Icons";
+import { EcoCard } from "@/components/EcoCard";
+import { coverPhoto } from "@/lib/photos";
 import { RequestCard } from "@/components/People";
 import { Avatar, Badge, Button, LinkButton, Page, SectionTitle } from "@/components/ui";
 import { DEMO_ACCOUNTS, REWARDS } from "@/lib/data";
@@ -26,36 +28,47 @@ export default function MePage() {
 
   return (
     <Page>
-      <div className="flex items-center gap-4">
-        <Avatar name={me.name} size={64} />
-        <div className="min-w-0 flex-1">
-          <h1 className="text-[22px] font-semibold tracking-[-0.02em]">{me.name}</h1>
-          <p className="text-[14px] text-muted">{me.street} · {me.phase}</p>
-          <Badge kind="verified" className="mt-1.5" />
+      {/* Cover with the avatar overlapping it */}
+      <div className="relative">
+        <div className="relative h-36 overflow-hidden rounded-[28px] bg-sun sm:h-44">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={coverPhoto()} alt="" className="absolute inset-0 size-full object-cover" />
+          <span className="absolute inset-0 bg-gradient-to-t from-night/40 to-transparent" />
+          <Link href={`/person?id=${me.id}`} aria-label="Public profile" className="press absolute top-3 right-3 flex size-11 items-center justify-center rounded-full bg-night/60 text-white backdrop-blur-md">
+            <ShareIcon size={19} />
+          </Link>
         </div>
-        <Link href={`/person?id=${me.id}`} className="text-[14px] font-medium underline underline-offset-4">Public profile</Link>
+        <span className="absolute -bottom-10 left-4 rounded-full ring-[5px] ring-canvas">
+          <Avatar name={me.name} size={88} />
+        </span>
+      </div>
+      <div className="mt-12 flex items-end justify-between gap-3 px-1">
+        <div className="min-w-0">
+          <h1 className="font-display text-[22px] font-semibold tracking-[-0.03em]">{me.name}</h1>
+          <p className="mt-0.5 text-[13px] text-muted">{me.street} · {me.phase}</p>
+        </div>
+        <Badge kind="verified" />
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+        {[
+          ["Listings", mine.length],
+          ["Posts", posts.length],
+          ["Saved", saved.length],
+        ].map(([k, n]) => (
+          <div key={k} className="rounded-[20px] bg-white py-3">
+            <p className="font-display text-[18px] font-semibold tracking-[-0.03em]">{n}</p>
+            <p className="text-[12px] text-muted">{k}</p>
+          </div>
+        ))}
       </div>
 
-      <Link href="/me/points" className="mt-6 flex items-center gap-4 rounded-[12px] border border-line px-4 py-4 hover:border-line-strong">
-        <EcoPointsIcon size={36} />
-        <span className="min-w-0 flex-1">
-          <span className="block text-[13px] text-muted">Eco points</span>
-          <span className="block text-[24px] leading-tight font-semibold tabular-nums">{fmtPoints(pts)}</span>
-          {next ? (
-            <span className="mt-2 block">
-              <span className="block h-1.5 overflow-hidden rounded-full bg-surface">
-                <span className="block h-full rounded-full bg-ember" style={{ width: `${Math.min(100, (pts / next.cost) * 100)}%` }} />
-              </span>
-              <span className="mt-1 block text-[12px] text-muted">{fmtPoints(next.cost - pts)} to {next.title}</span>
-            </span>
-          ) : null}
-        </span>
-        <ChevronRightIcon size={18} className="text-muted" />
+      <Link href="/me/points" className="press mt-4 block">
+        <EcoCard name={me.name} points={pts} since={me.since} next={next} />
       </Link>
 
       <SectionTitle>
         <span className="flex items-center gap-2">
-          Requests for you {incoming.length ? <span className="rounded-full bg-ember px-2 py-0.5 text-[12px] text-white">{incoming.length}</span> : null}
+          Requests for you {incoming.length ? <span className="rounded-full bg-ember px-2 py-0.5 font-sans text-[12px] text-white">{incoming.length}</span> : null}
         </span>
       </SectionTitle>
       {incoming.length ? (
@@ -70,7 +83,7 @@ export default function MePage() {
       {sent.length ? (
         <>
           <SectionTitle>Requests you sent</SectionTitle>
-          <ul>
+          <ul className="rounded-[24px] bg-white px-4">
             {sent.map((r) => {
               const href = r.bookingId ? `/booking?id=${r.bookingId}` : `/post?id=${r.postId}`;
               const about = r.postId ? state.posts.find((p) => p.id === r.postId)?.title : state.bookings.find((b) => b.id === r.bookingId)?.title.split(",")[0];
@@ -102,7 +115,7 @@ export default function MePage() {
       {posts.length ? (
         <>
           <SectionTitle>Your posts</SectionTitle>
-          <ul>
+          <ul className="rounded-[24px] bg-white px-3">
             {posts.map((p) => {
               const replies = state.requests.filter((r) => r.postId === p.id && r.status === "pending").length;
               return (
@@ -137,7 +150,7 @@ export default function MePage() {
             key={a.id}
             onClick={() => { signIn(a.id); router.push("/home"); }}
             disabled={a.id === me.id}
-            className="flex items-center gap-3 rounded-[10px] border border-line-strong px-3.5 py-3 text-left hover:border-ink disabled:border-ink disabled:bg-surface"
+            className="press flex items-center gap-3 rounded-[20px] border-2 border-transparent bg-white px-3 py-2.5 text-left hover:border-line-strong disabled:border-night"
           >
             <Avatar name={nameOf(a.id)} size={34} />
             <span className="min-w-0 flex-1">

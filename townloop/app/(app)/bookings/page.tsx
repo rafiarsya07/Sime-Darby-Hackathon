@@ -41,17 +41,17 @@ export default function BookingsPage() {
 
   return (
     <Page>
-      <h1 className="text-[24px] font-semibold tracking-[-0.02em]">Bookings</h1>
+      <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">Bookings</h1>
       <p className="mt-1 text-[14px] text-muted">Everything you&apos;re renting, lending, hiring and helping with.</p>
 
-      <div role="tablist" className="mt-5 flex gap-6 border-b border-line">
+      <div role="tablist" className="mt-5 inline-flex gap-1 rounded-full bg-white p-1">
         {(["active", "past"] as const).map((t) => (
           <button
             key={t}
             role="tab"
             aria-selected={tab === t}
             onClick={() => setTab(t)}
-            className={`-mb-px border-b-2 py-2.5 text-[15px] ${tab === t ? "border-ink font-semibold" : "border-transparent font-medium text-muted"}`}
+            className={`rounded-full px-4 py-2 text-[14px] font-semibold transition-colors ${tab === t ? "bg-night text-white" : "text-muted hover:text-ink"}`}
           >
             {t === "active" ? `Active (${active.length})` : "Past"}
           </button>
@@ -63,15 +63,15 @@ export default function BookingsPage() {
           <LinkButton href="/home" variant="secondary" size="sm" className="mt-3">Browse your street</LinkButton>
         </Empty>
       ) : (
-        <ul>
+        <ul className="mt-4 space-y-2">
           {list.map((b) => {
             const provider = b.providerId === me.id;
             const other = nameOf(provider ? b.customerId : b.providerId);
             const s = statusLine(b, me.id);
             return (
-              <li key={b.id} className="border-b border-line last:border-b-0">
-                <Link href={`/booking?id=${b.id}`} className="flex items-center gap-3.5 py-3 hover:bg-surface/50">
-                  <ArtTile art={b.art} size={52} />
+              <li key={b.id}>
+                <Link href={`/booking?id=${b.id}`} className="press flex items-center gap-3.5 rounded-[22px] bg-white p-2.5 pr-3 hover:shadow-[0_10px_24px_-16px_rgba(21,23,28,0.4)]">
+                  <ArtTile art={b.art} size={60} className="rounded-[16px]" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-semibold">{b.title.split(",")[0]}</span>
                     <span className="block truncate text-[13px] text-muted">

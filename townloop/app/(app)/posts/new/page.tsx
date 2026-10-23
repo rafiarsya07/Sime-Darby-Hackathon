@@ -61,7 +61,7 @@ export default function NewPostPage() {
 
   return (
     <Page>
-      <h1 className="text-[24px] font-semibold tracking-[-0.02em]">Post a request</h1>
+      <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">Post a request</h1>
       <p className="mt-1 text-[14px] text-muted">Neighbours and vendors who can help request to chat. You choose who to talk to.</p>
 
       <form onSubmit={submit} noValidate className="mt-6 space-y-5">
@@ -69,7 +69,7 @@ export default function NewPostPage() {
           <legend className="mb-2 text-[14px] font-medium">What do you need?</legend>
           <div className="grid gap-2 sm:grid-cols-3">
             {KINDS.map((x) => (
-              <label key={x.id} className={`cursor-pointer rounded-[10px] border px-3.5 py-3 ${tier === x.id ? "border-ink" : "border-line-strong hover:border-ink"}`}>
+              <label key={x.id} className={`cursor-pointer rounded-[20px] border-2 bg-white px-4 py-3.5 ${tier === x.id ? "border-ember" : "border-transparent hover:border-line-strong"}`}>
                 <input type="radio" name="tier" checked={tier === x.id} onChange={() => setTier(x.id)} className="sr-only" />
                 <span className="block text-[15px] font-semibold">{x.label}</span>
                 <span className="block text-[13px] text-muted">{x.note}</span>
@@ -96,7 +96,7 @@ export default function NewPostPage() {
         </div>
 
         <TextField label="Budget" hint={tier === "rent" ? "Leave empty if you hope to borrow free" : "Optional"}>
-          <span className="flex h-12 items-center rounded-[10px] border border-line-strong px-3.5 focus-within:border-ink">
+          <span className="flex h-12 items-center rounded-[14px] border border-line-strong bg-white px-3.5 focus-within:border-ink">
             <span className="mr-1.5 text-muted">RM</span>
             <input inputMode="decimal" value={budget} onChange={(e) => setBudget(e.target.value.replace(/[^\d.]/g, ""))} placeholder="20" className="min-w-0 flex-1 bg-transparent text-[15px] outline-none" />
           </span>

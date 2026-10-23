@@ -94,7 +94,7 @@ function BookingPageInner() {
       href={whatsappLink(`Hi ${other}, it's ${me.name} from TownLoop about "${short}" (booking ${b.id}).`)}
       target="_blank"
       rel="noreferrer"
-      className="press inline-flex h-12 w-full items-center justify-center gap-2 rounded-[12px] border border-line-strong text-[16px] font-semibold hover:border-ink"
+      className="press inline-flex h-12 w-full items-center justify-center gap-2 rounded-[16px] bg-white text-[15px] font-semibold hover:bg-surface"
     >
       <MessagesIcon size={20} /> Chat with {other} on WhatsApp
     </a>
@@ -104,12 +104,12 @@ function BookingPageInner() {
     <Page>
       <div className="flex items-center justify-between">
         <BackButton onClick={() => router.back()} />
-        <span className="rounded-full bg-surface px-3 py-1.5 text-[12px] font-semibold text-ink-2">Booking {b.id.toUpperCase()}</span>
+        <span className="rounded-full bg-white px-3.5 py-2 font-display text-[11px] font-semibold tracking-[0.04em] text-ink-2">#{b.id.toUpperCase()}</span>
       </div>
 
       {b.status !== "declined" ? <Stepper steps={STEPS[b.tier === "rent" ? "rent" : "other"]} reached={reached} /> : null}
 
-      <div className="relative mt-5 aspect-[16/8] overflow-hidden rounded-[18px] bg-surface">
+      <div className="relative mt-5 aspect-[16/8] overflow-hidden rounded-[28px] bg-surface">
         <ArtPhoto art={b.art} w={1000} h={500} alt={b.title} iconSize={80} eager />
       </div>
 
@@ -249,6 +249,7 @@ function BookingPageInner() {
 
         {b.status === "closed" ? (
           <Headline eyebrow="Closed" title={isProvider ? `Thanks for helping ${customer}` : `All done with ${provider}`}>
+            <Success />
             {paid.length ? (
               <ul className="mt-3 space-y-1.5">
                 {paid.map((p) => (
@@ -267,36 +268,37 @@ function BookingPageInner() {
         {(b.status === "done" || b.status === "closed") && !reviewed && otherId !== "sdp" ? <ReviewForm name={other} hint={isProvider ? "Friendly, paid on time." : b.tier === "rent" ? "Clean and ready on time." : "Neat work, came on time."} onSubmit={(s, t) => review(b.id, s, t)} /> : null}
       </section>
 
-      <section className="mt-8 rounded-[18px] border border-line p-4">
-        <h2 className="text-[16px] font-semibold">{b.title}</h2>
-        <dl className="mt-2 space-y-1.5 text-[14px]">
-          <div className="flex justify-between gap-4"><dt className="text-muted">Date</dt><dd>{fmtDay(b.from)}{b.to !== b.from ? ` to ${fmtDay(b.to)}` : ""}{b.time ? `, ${b.time}` : ""}</dd></div>
-          {lineItem ? <div className="flex justify-between gap-4"><dt className="text-muted">{lineItem.label}</dt><dd>{lineItem.value}</dd></div> : null}
-          {b.group ? <div className="flex justify-between gap-4"><dt className="text-muted">Street group</dt><dd>{group ? `${group.joined.length} of ${group.target} homes` : "Yes"}</dd></div> : null}
+      <section className="mt-8 rounded-[28px] bg-night p-5 text-white">
+        <p className="font-display text-[10px] font-semibold tracking-[0.06em] text-white/50 uppercase">Summary</p>
+        <h2 className="mt-1 text-[16px] font-semibold">{b.title}</h2>
+        <dl className="mt-3 space-y-2 text-[14px] [&_dt]:text-white/55">
+          <div className="flex justify-between gap-4"><dt>Date</dt><dd>{fmtDay(b.from)}{b.to !== b.from ? ` to ${fmtDay(b.to)}` : ""}{b.time ? `, ${b.time}` : ""}</dd></div>
+          {lineItem ? <div className="flex justify-between gap-4"><dt>{lineItem.label}</dt><dd>{lineItem.value}</dd></div> : null}
+          {b.group ? <div className="flex justify-between gap-4"><dt>Street group</dt><dd>{group ? `${group.joined.length} of ${group.target} homes` : "Yes"}</dd></div> : null}
           {b.deposit ? (
             <div className="flex justify-between gap-4">
-              <dt className="text-muted">Deposit</dt>
+              <dt>Deposit</dt>
               <dd>{rm(b.deposit)} {b.status === "in_use" ? "held" : b.status === "done" || b.status === "closed" ? "released" : "on pick up"}</dd>
             </div>
           ) : null}
         </dl>
-        <div className="mt-3 flex items-baseline justify-between border-t border-line pt-3">
-          <span className="text-[15px] font-semibold">Total</span>
-          <span className="text-[20px] font-semibold tracking-[-0.01em]">{b.total ? rm(b.total) : "Free"}</span>
+        <div className="mt-4 flex items-center justify-between rounded-[18px] bg-white/[0.07] py-3 pr-3 pl-4">
+          <span className="font-display text-[11px] font-semibold tracking-[0.05em] uppercase">Total</span>
+          <span className="rounded-[12px] bg-ember px-3 py-1.5 font-display text-[18px] font-bold tracking-[-0.03em]">{b.total ? rm(b.total) : "Free"}</span>
         </div>
-        <p className="mt-1 text-[12px] text-muted">{b.providerKind === "vendor" ? "Paid to the vendor after the job." : "Paid directly by cash or DuitNow."}</p>
+        <p className="mt-2 text-[12px] text-white/50">{b.providerKind === "vendor" ? "Paid to the vendor after the job." : "Paid directly by cash or DuitNow."}</p>
       </section>
 
       {b.status !== "declined" ? (
-        <section className="mt-4 rounded-[18px] bg-[#F1F8F3] p-4">
+        <section className="mt-3 rounded-[28px] bg-leaf-wash p-5">
           <div className="flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2 text-[16px] font-semibold"><EcoPointsIcon size={22} /> Eco points</h2>
-            <span className="text-[13px] font-semibold text-[#17803D]">
+            <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-leaf-text">
               {earned ? `+${fmtPoints(earned)} earned` : previewTotal ? `+${fmtPoints(previewTotal)} on close` : "None for this one"}
             </span>
           </div>
-          <span className="mt-3 block h-2 overflow-hidden rounded-full bg-white">
-            <span className="block h-full rounded-full bg-[#22A55B]" style={{ width: `${Math.min(100, (bal / (nextReward?.cost ?? Math.max(bal, 1))) * 100)}%` }} />
+          <span className="mt-4 block h-2.5 overflow-hidden rounded-full bg-white">
+            <span className="block h-full rounded-full bg-[#1F9D63]" style={{ width: `${Math.min(100, (bal / (nextReward?.cost ?? Math.max(bal, 1))) * 100)}%` }} />
           </span>
           <p className="mt-2 flex items-center justify-between text-[13px] text-ink-2">
             <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-[#F5A524]" /> {fmtPoints(bal)} points</span>
@@ -305,7 +307,7 @@ function BookingPageInner() {
         </section>
       ) : null}
 
-      <Link href={`/person?id=${otherId}`} className="mt-4 flex items-center gap-3 rounded-[18px] border border-line p-3.5 hover:border-line-strong">
+      <Link href={`/person?id=${otherId}`} className="press mt-3 flex items-center gap-3 rounded-[24px] bg-white p-3.5">
         <Avatar name={other} vendor={!!v && otherId === b.providerId} />
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2 text-[15px] font-semibold">
@@ -325,7 +327,7 @@ function Headline({ eyebrow, title, children }: { eyebrow: string; title: string
   return (
     <div>
       <p className="text-[13px] font-medium text-muted">{eyebrow}</p>
-      <h1 className="mt-1 text-[26px] leading-tight font-semibold tracking-[-0.025em]">{title}</h1>
+      <h1 className="mt-1 font-display text-[22px] leading-[1.15] font-semibold tracking-[-0.035em] sm:text-[26px]">{title}</h1>
       {children}
     </div>
   );
@@ -397,10 +399,10 @@ function Stepper({ steps, reached }: { steps: { status: BookingStatus; label: st
         return (
           <li key={s.status} className="relative flex flex-1 flex-col items-center text-center">
             {i < steps.length - 1 ? (
-              <span className={`absolute top-[13px] left-1/2 h-[3px] w-full rounded-full ${nextHit ? "bg-[#22A55B]" : "bg-line"}`} aria-hidden="true" />
+              <span className={`absolute top-[13px] left-1/2 h-[3px] w-full rounded-full ${nextHit ? "bg-[#1F9D63]" : "bg-line"}`} aria-hidden="true" />
             ) : null}
             <span
-              className={`relative z-10 flex size-7 items-center justify-center rounded-full ${hit ? "bg-[#22A55B] text-white" : "border-2 border-line-strong bg-white"}`}
+              className={`relative z-10 flex size-7 items-center justify-center rounded-full ${hit ? "bg-[#1F9D63] text-white" : "border-2 border-line-strong bg-white"}`}
             >
               {hit ? (
                 <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3.2 3.2L15 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -412,5 +414,23 @@ function Stepper({ steps, reached }: { steps: { status: BookingStatus; label: st
         );
       })}
     </ol>
+  );
+}
+
+/** Little celebration for a closed loop: green check with confetti. */
+function Success() {
+  const dots = [
+    ["8%", "20%", "#F26B2E"], ["18%", "70%", "#FFC83D"], ["30%", "10%", "#1F9D63"], ["70%", "14%", "#F26B2E"],
+    ["82%", "62%", "#1F9D63"], ["92%", "28%", "#FFC83D"], ["60%", "80%", "#15171C"], ["40%", "84%", "#F26B2E"],
+  ];
+  return (
+    <div className="relative mt-4 flex h-28 items-center justify-center overflow-hidden rounded-[24px] bg-white" aria-hidden="true">
+      {dots.map(([x, y, c], i) => (
+        <span key={i} className={`absolute ${i % 2 ? "h-1.5 w-3 rounded-full" : "size-2 rounded-[2px]"}`} style={{ left: x, top: y, background: c, transform: `rotate(${i * 37}deg)` }} />
+      ))}
+      <span className="flex size-16 items-center justify-center rounded-full bg-leaf text-white shadow-[0_10px_24px_-10px_rgba(31,157,99,0.8)]">
+        <svg width="30" height="30" viewBox="0 0 20 20"><path d="M5 10.5l3.2 3.2L15 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      </span>
+    </div>
   );
 }

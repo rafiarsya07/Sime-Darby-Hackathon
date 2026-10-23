@@ -6,7 +6,7 @@ import { Suspense, useState } from "react";
 import { ArtPhoto } from "@/components/Art";
 import { ForecastCard } from "@/components/Forecast";
 import { ChatPolicy, useTrackRecord } from "@/components/People";
-import { BackIcon, HeartIcon, ShareIcon } from "@/components/Icons";
+import { ArrowRightIcon, BackIcon, HeartIcon, ShareIcon } from "@/components/Icons";
 import { Avatar, Badge, Button, Empty, inputClass, LinkButton, Page, Rating, Stars, TextField } from "@/components/ui";
 import { vendorKindOf } from "@/lib/data";
 import { addDays, distance, fmtDay, fmtDistance, isoDate, nextSaturday, rm, unitLabel, units } from "@/lib/format";
@@ -86,47 +86,55 @@ function ListingPageInner() {
 
   return (
     <div>
-      <div className="mx-auto w-full max-w-5xl md:px-8 md:pt-8">
+      <div className="mx-auto w-full max-w-5xl px-4 pt-2 sm:px-8 md:pt-6">
         <div className="md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-10">
-          <div className="relative aspect-[4/3] overflow-hidden bg-surface md:sticky md:top-24 md:self-start md:rounded-[20px]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface md:sticky md:top-24 md:self-start">
             <ArtPhoto art={l.art} w={1200} h={900} alt={l.title} iconSize={150} eager />
-            <button onClick={() => router.back()} aria-label="Back" className="press absolute top-3 left-3 flex size-10 items-center justify-center rounded-full bg-white/95 shadow-sm">
+            <button onClick={() => router.back()} aria-label="Back" className="press absolute top-3 left-3 flex size-11 items-center justify-center rounded-full bg-white shadow-sm">
               <BackIcon size={20} />
             </button>
-            <button
-              onClick={() => toggleSave(l.id)}
-              aria-label={saved ? "Remove from saved" : "Save"}
-              aria-pressed={saved}
-              className="press absolute top-3 right-3 flex size-10 items-center justify-center rounded-full bg-white/95 shadow-sm"
-            >
-              <HeartIcon size={20} filled={saved} />
-            </button>
-            <button onClick={share} aria-label="Share" className="press absolute right-3 bottom-3 flex size-10 items-center justify-center rounded-full bg-white/95 shadow-sm">
-              <ShareIcon size={19} />
-            </button>
+            {l.rating ? (
+              <span className="absolute top-3.5 right-3.5 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1.5 text-[12px] leading-none font-semibold shadow-sm">
+                <svg width="12" height="12" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.8l2.5 5.3 5.8.7-4.3 4 1.1 5.7L10 14.7l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z" fill="#FFB020" /></svg>
+                {l.rating.toFixed(1)}
+              </span>
+            ) : null}
+            <div className="absolute right-3 bottom-3 flex gap-2">
+              <button onClick={share} aria-label="Share" className="press flex size-11 items-center justify-center rounded-full bg-night/70 text-white backdrop-blur-md">
+                <ShareIcon size={19} />
+              </button>
+              <button
+                onClick={() => toggleSave(l.id)}
+                aria-label={saved ? "Remove from saved" : "Save"}
+                aria-pressed={saved}
+                className={`press flex size-11 items-center justify-center rounded-full backdrop-blur-md ${saved ? "bg-ember text-white" : "bg-night/70 text-white"}`}
+              >
+                <HeartIcon size={20} />
+              </button>
+            </div>
             {shared ? <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-ink px-3 py-1.5 text-[12px] font-semibold text-white">Link copied</span> : null}
           </div>
 
-          <div className="px-4 pt-5 pb-56 sm:px-8 md:px-0 md:pt-0 md:pb-16">
+          <div className="pt-5 pb-64 md:pt-0 md:pb-16">
             <div className="flex flex-wrap gap-1.5">
               {l.free ? <Badge kind="free" /> : null}
               {l.facility ? <Badge kind="facility" /> : null}
               {kind ? <Badge kind={kind} /> : null}
               <span className="text-[12px] text-muted">{l.category}</span>
             </div>
-            <h1 className="mt-2 text-[26px] leading-tight font-semibold tracking-[-0.025em]">{l.title}</h1>
-            <p className="mt-2 text-[26px] font-semibold tracking-[-0.02em]">
-              {l.free ? "Free to borrow" : rm(l.price)}
-              {!l.free ? <span className="text-[15px] font-normal text-muted"> / {unitLabel[l.unit]}</span> : null}
+            <h1 className="mt-2.5 font-display text-[23px] leading-[1.15] font-semibold tracking-[-0.035em] sm:text-[28px]">{l.title}</h1>
+            <p className="mt-2.5 flex flex-wrap items-baseline gap-x-2">
+              <span className="font-display text-[26px] font-bold tracking-[-0.04em]">{l.free ? "Free" : rm(l.price)}</span>
+              {!l.free ? <span className="text-[14px] text-muted">per {unitLabel[l.unit]}</span> : <span className="text-[14px] text-muted">to borrow</span>}
+              {l.groupPrice ? <span className="rounded-full bg-sun px-2.5 py-1 text-[12px] font-semibold">{rm(l.groupPrice)} in a street group</span> : null}
             </p>
-            {l.groupPrice ? <p className="text-[14px] font-medium text-ember-text">{rm(l.groupPrice)} each when your street books together</p> : null}
             <p className="mt-1.5 flex items-center gap-2 text-[13px] text-muted">
               <Rating value={l.rating} count={l.reviews} stars /> · {l.done} {l.tier === "rent" ? "loops" : "jobs"} done
             </p>
             <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{l.description}</p>
 
             {/* Who */}
-            <Link href={`/person?id=${l.ownerId}`} className="mt-5 flex items-center gap-3.5 rounded-[16px] border border-line p-3.5 hover:border-line-strong">
+            <Link href={`/person?id=${l.ownerId}`} className="press mt-5 flex items-center gap-3.5 rounded-[24px] bg-white p-3 hover:shadow-[0_10px_24px_-16px_rgba(21,23,28,0.4)]">
               <Avatar name={ownerName} vendor={!!v} size={52} />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[16px] font-semibold">{mine ? "You" : ownerName}</span>
@@ -141,7 +149,7 @@ function ListingPageInner() {
               </span>
             </Link>
 
-            <dl className="mt-3 text-[15px]">
+            <dl className="mt-3 rounded-[24px] bg-white px-4 text-[14px] [&>div:last-child]:border-b-0">
               {l.deposit ? <Row label="Deposit" value={`${rm(l.deposit)}, held not charged`} /> : null}
               <Row label={l.tier === "rent" ? "Pick up" : "Availability"} value={l.when} />
               {l.groupPrice && g ? <Row label="Street group" value={`${rm(l.groupPrice)} each, ${g.joined.length} of ${g.target} joined`} /> : null}
@@ -167,24 +175,26 @@ function ListingPageInner() {
               <LinkButton href={`/booking?id=${open.id}`} variant="accent" size="lg" className="mt-6 w-full">See your booking</LinkButton>
             ) : (
               <div className="mt-6 space-y-4">
-                {isDay ? (
-                  <div className="grid grid-cols-2 gap-3">
-                    <DateField label="From" value={from} min={isoDate(new Date())} onChange={(v) => { setFrom(v); setError(""); if (v > to) setTo(v); }} />
-                    <DateField label={l.unit === "night" ? "Until" : "Return"} value={to} min={from} onChange={(v) => { setTo(v); setError(""); }} />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    <DateField label="Date" value={from} min={isoDate(new Date())} onChange={(v) => { setFrom(v); setError(""); }} />
-                    {l.tier !== "rent" ? (
-                      <label className="block rounded-[12px] border border-line-strong px-3.5 py-2.5 focus-within:border-ink">
-                        <span className="block text-[12px] text-muted">Time</span>
-                        <select value={time} onChange={(e) => setTime(e.target.value)} className="w-full bg-transparent text-[15px] font-medium outline-none">
-                          {TIMES.map((t) => <option key={t}>{t}</option>)}
-                        </select>
-                      </label>
-                    ) : null}
-                  </div>
-                )}
+                <div className="grid grid-cols-2 gap-3">
+                  <Panel label={isDay ? "Pick up" : "Date"}>
+                    <input type="date" value={from} min={isoDate(new Date())} onChange={(e) => { const v = e.target.value; if (!v) return; setFrom(v); setError(""); if (v > to) setTo(v); }} className="w-full bg-transparent text-[15px] font-semibold outline-none" />
+                  </Panel>
+                  {isDay ? (
+                    <Panel label={l.unit === "night" ? "Until" : "Return"} dark>
+                      <input type="date" value={to} min={from} onChange={(e) => { if (!e.target.value) return; setTo(e.target.value); setError(""); }} className="w-full bg-transparent text-[15px] font-semibold text-white outline-none [color-scheme:dark]" />
+                    </Panel>
+                  ) : l.tier !== "rent" ? (
+                    <Panel label="Time" dark>
+                      <select value={time} onChange={(e) => setTime(e.target.value)} className="w-full bg-transparent text-[15px] font-semibold text-white outline-none [&>option]:text-ink">
+                        {TIMES.map((t) => <option key={t}>{t}</option>)}
+                      </select>
+                    </Panel>
+                  ) : (
+                    <Panel label="Slot" dark>
+                      <span className="block text-[15px] font-semibold text-white">{l.when.split(",")[0]}</span>
+                    </Panel>
+                  )}
+                </div>
 
                 {l.tier === "vendors" && l.groupPrice ? (
                   <fieldset className="space-y-2">
@@ -217,19 +227,23 @@ function ListingPageInner() {
                 {error && message.trim() ? <p className="text-[13px] text-[#B42318]">{error}</p> : null}
                 {!l.facility ? <ChatPolicy name={ownerName} /> : <p className="text-[13px] text-muted">SDP facilities confirm straight away.</p>}
 
-                <div className="fixed inset-x-0 bottom-16 z-20 rounded-t-[20px] border-t border-line bg-white px-4 pt-3 pb-3 shadow-[0_-8px_24px_-16px_rgba(0,0,0,0.25)] md:static md:rounded-none md:border-0 md:p-0 md:shadow-none">
-                  <div className="mx-auto max-w-2xl">
-                    <p className="mb-2 flex items-baseline justify-between text-[13px] text-muted">
-                      <span>
-                        {isDay ? `${n} ${unitLabel[l.unit]}${n > 1 ? "s" : ""}` : l.tier === "rent" ? "One slot" : `Per ${unitLabel[l.unit]}`}
-                        {l.deposit ? ` · ${rm(l.deposit)} deposit held` : ""}
-                      </span>
-                      <span className="text-[17px] font-semibold text-ink">{l.free ? "Free" : rm(total)}</span>
-                    </p>
-                    <Button variant="accent" size="lg" className="w-full" onClick={submit}>
-                      {l.facility ? "Book this slot" : `Request to chat with ${ownerName.split(" ")[0] === "Pak" ? ownerName : ownerName.split(" ")[0]}`}
-                    </Button>
-                  </div>
+                <div className="fixed inset-x-0 bottom-[92px] z-20 px-4 md:static md:px-0">
+                  <button
+                    onClick={submit}
+                    className="press mx-auto flex h-[60px] w-full max-w-2xl items-center gap-3 rounded-[20px] bg-ember pr-2 pl-5 text-white shadow-[0_14px_30px_-12px_rgba(242,107,46,0.8)] hover:bg-[#E35D20]"
+                  >
+                    <span className="min-w-0 flex-1 truncate text-left font-display text-[12px] font-semibold tracking-[0.03em] uppercase">
+                      {l.facility ? "Book this slot" : `Request to chat with ${ownerName.startsWith("Pak ") ? ownerName : ownerName.split(" ")[0]}`}
+                    </span>
+                    <span className="flex h-11 shrink-0 items-center gap-2 rounded-[14px] bg-white/15 px-3">
+                      <span className="font-display text-[14px] font-bold tracking-[-0.03em]">{l.free ? "Free" : rm(total)}</span>
+                      <ArrowRightIcon size={16} />
+                    </span>
+                  </button>
+                  <p className="mx-auto mt-1.5 max-w-2xl text-center text-[11px] text-muted md:text-left">
+                    {isDay ? `${n} ${unitLabel[l.unit]}${n > 1 ? "s" : ""}` : l.tier === "rent" ? "One slot" : `Per ${unitLabel[l.unit]}`}
+                    {l.deposit ? ` · ${rm(l.deposit)} deposit held, not charged` : ""}
+                  </p>
                 </div>
               </div>
             )}
@@ -249,9 +263,19 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
+/** Light or night block with a small caps label, like a shop's "choose size" box. */
+function Panel({ label, dark = false, children }: { label: string; dark?: boolean; children: React.ReactNode }) {
+  return (
+    <label className={`relative block overflow-hidden rounded-[20px] px-4 pt-3 pb-3.5 ${dark ? "bg-night text-white" : "bg-white text-ink"}`}>
+      <span className={`mb-1.5 block font-display text-[10px] font-semibold tracking-[0.06em] uppercase ${dark ? "text-white/60" : "text-muted"}`}>{label}</span>
+      {children}
+    </label>
+  );
+}
+
 function Choice({ checked, onChange, title, note }: { checked: boolean; onChange: () => void; title: string; note: string }) {
   return (
-    <label className={`flex cursor-pointer items-start gap-3 rounded-[14px] border px-3.5 py-3 ${checked ? "border-ember bg-ember-wash/60" : "border-line-strong"}`}>
+    <label className={`flex cursor-pointer items-start gap-3 rounded-[20px] border-2 px-4 py-3.5 ${checked ? "border-ember bg-white" : "border-transparent bg-white"}`}>
       <input type="radio" checked={checked} onChange={onChange} className="mt-1 size-4 accent-[#F26B2E]" />
       <span>
         <span className="block text-[15px] font-medium">{title}</span>

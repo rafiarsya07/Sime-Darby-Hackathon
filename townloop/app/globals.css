@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 /* ===========================================================================
+   TownLoop design system (v3)
+
+   Warm canvas, white cards with big 24px corners, night panels and one
+   orange. Unbounded (wide display) for titles, prices and labels in caps;
+   Funnel Sans for everything you read.
+
+   Older notes below still hold for spacing and hairlines.
+
    TownLoop design system
 
    White page, ink text, one orange.
@@ -12,21 +20,34 @@
    =========================================================================== */
 
 @theme {
-  --color-ink: #1a1a1a;
-  --color-ink-2: #4d4d4d;
-  --color-muted: #6e6e6e; /* 5.1:1 on white */
-  --color-line: #ececec;
-  --color-line-strong: #d6d6d6;
-  --color-surface: #f5f5f3;
+  /* Night: text, dark panels, the floating nav. */
+  --color-ink: #15171c;
+  --color-ink-2: #474a52;
+  --color-muted: #6f7279; /* 4.8:1 on white */
+  --color-line: #ebe9e3;
+  --color-line-strong: #d4d1c9;
+  /* Stone: chips, inputs, empty photo tiles. Canvas: app background. */
+  --color-surface: #f1efe9;
+  --color-canvas: #f6f5f1;
   --color-paper: #ffffff;
+  --color-night: #15171c;
+  --color-night-2: #24272e;
+  /* Ember: Sime Darby orange, the one action colour. */
   --color-ember: #f26b2e;
-  --color-ember-text: #c2491a; /* 4.9:1 on white */
-  --color-ember-wash: #fff3ec;
+  --color-ember-text: #c2491a;
+  --color-ember-wash: #fff0e6;
+  /* Sun and leaf: promo blocks, Eco points, success. */
+  --color-sun: #ffc83d;
+  --color-sun-wash: #fff6d6;
+  --color-leaf: #1f9d63;
+  --color-leaf-text: #17784c;
+  --color-leaf-wash: #e5f5ec;
 
   --font-sans: "Funnel Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Funnel Display", "Funnel Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Unbounded", "Funnel Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-wordmark: "Funnel Display", "Funnel Sans", ui-sans-serif, sans-serif;
 
-  --radius-control: 10px;
+  --radius-control: 14px;
 }
 
 :root {

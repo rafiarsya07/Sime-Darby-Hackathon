@@ -41,7 +41,7 @@ export default function SignInPage() {
 
       {step === "intro" ? (
         <>
-          <h1 className="mt-10 text-[28px] leading-tight font-semibold tracking-[-0.02em]">Hi, neighbour.</h1>
+          <h1 className="mt-10 font-display text-[28px] leading-tight font-semibold tracking-[-0.04em]">Hi, neighbour.</h1>
           <p className="mt-2.5 text-[16px] leading-relaxed text-ink-2">
             TownLoop is for people who live in Elmina Valley. Sign in with your SDP PRIME account and we&apos;ll check your
             address for you.
@@ -60,7 +60,7 @@ export default function SignInPage() {
 
       {step === "pick" ? (
         <>
-          <h1 className="mt-10 text-[24px] font-semibold tracking-[-0.02em]">Choose a demo resident</h1>
+          <h1 className="mt-10 font-display text-[22px] font-semibold tracking-[-0.035em]">Choose a demo resident</h1>
           <p className="mt-2 text-[15px] text-ink-2">In the real app this is your own SDP PRIME login.</p>
           <ul className="mt-5 border-t border-line">
             {DEMO_ACCOUNTS.map((a) => {
@@ -91,7 +91,7 @@ export default function SignInPage() {
 
       {step === "checking" && person ? (
         <div className="mt-10" role="status" aria-live="polite">
-          <h1 className="text-[24px] font-semibold tracking-[-0.02em]">Checking your address…</h1>
+          <h1 className="font-display text-[22px] font-semibold tracking-[-0.035em]">Checking your address…</h1>
           <ul className="mt-5 space-y-3 text-[15px]">
             <li className="flex items-center gap-3"><CheckIcon size={20} /> Signed in as {person.name}</li>
             <li className="flex items-center gap-3"><CheckIcon size={20} /> {person.tenure} at {person.street}</li>

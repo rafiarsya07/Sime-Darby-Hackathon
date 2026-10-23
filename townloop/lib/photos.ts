@@ -67,3 +67,8 @@ export function personPhoto(idOrName: string, size = 160) {
   const id = PEOPLE[idOrName] ?? PEOPLE[NAME_TO_ID[idOrName] ?? ""];
   return id ? url(id, size, size, true) : null;
 }
+
+/** Wide township photo for profile covers. */
+export function coverPhoto(w = 900, h = 360) {
+  return url("1708957351881-10c3e877da56", w, h);
+}

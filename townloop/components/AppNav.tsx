@@ -30,21 +30,22 @@ export function AppHeader() {
   const pending = usePendingCount();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 bg-canvas/85 backdrop-blur-md">
       <Container>
-        <div className="flex h-15 items-center gap-6">
+        <div className="flex h-16 items-center gap-6">
           <Logo href="/home" />
-          <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 rounded-full bg-white p-1 shadow-[0_1px_0_rgba(0,0,0,0.04)] md:flex">
             {[
               { href: "/home", label: "Home", active: pathname === "/home" || pathname.startsWith("/item") },
               { href: "/posts", label: "Posts", active: pathname.startsWith("/post") },
               { href: "/bookings", label: "Bookings", active: pathname.startsWith("/booking") },
+              { href: "/me", label: "Me", active: pathname.startsWith("/me") },
             ].map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
                 aria-current={n.active ? "page" : undefined}
-                className={`rounded-full px-3 py-1.5 text-[14px] font-medium hover:bg-surface ${n.active ? "text-ink" : "text-muted"}`}
+                className={`rounded-full px-4 py-2 text-[14px] font-medium transition-colors ${n.active ? "bg-night text-white" : "text-ink-2 hover:bg-surface"}`}
               >
                 {n.label}
               </Link>
@@ -54,24 +55,26 @@ export function AppHeader() {
             {me ? (
               <Link
                 href="/me/points"
-                className="hidden h-9 items-center gap-1.5 rounded-full border border-line px-3 text-[13px] font-semibold hover:border-line-strong sm:inline-flex"
+                className="press inline-flex h-10 items-center gap-2 rounded-full bg-white pr-3.5 pl-1.5 text-[13px] font-semibold shadow-[0_1px_0_rgba(0,0,0,0.04)]"
               >
-                <span className="size-[7px] rounded-full bg-ember" aria-hidden="true" />
-                {fmtPoints(balance(me.id))} pts
+                <span className="flex size-7 items-center justify-center rounded-full bg-leaf-wash text-leaf-text" aria-hidden="true">
+                  <LeafMini />
+                </span>
+                <span className="font-display text-[12px] tracking-[-0.01em]">{fmtPoints(balance(me.id))}</span>
               </Link>
             ) : null}
             <Link
               href="/list"
-              className="press hidden h-9 items-center gap-1.5 rounded-[10px] bg-ink px-3.5 text-[14px] font-semibold text-white hover:bg-[#333] md:inline-flex"
+              className="press hidden h-10 items-center gap-1.5 rounded-full bg-ember px-4 text-[14px] font-semibold text-white hover:bg-[#E35D20] md:inline-flex"
             >
               <AddIcon size={16} />
               List
             </Link>
             {me ? (
-              <Link href="/me" aria-label={`${me.name}, your account${pending ? `, ${pending} new requests` : ""}`} className="relative rounded-full">
-                <Avatar name={me.name} size={36} />
+              <Link href="/me" aria-label={`${me.name}, your account${pending ? `, ${pending} new requests` : ""}`} className="relative hidden rounded-full sm:block">
+                <Avatar name={me.name} size={40} />
                 {pending ? (
-                  <span className="absolute -top-0.5 -right-0.5 flex size-[18px] items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white ring-2 ring-white">
+                  <span className="absolute -top-0.5 -right-0.5 flex size-[18px] items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white ring-2 ring-canvas">
                     {pending}
                   </span>
                 ) : null}
@@ -84,32 +87,55 @@ export function AppHeader() {
   );
 }
 
-/** Phone navigation: Home, List, Bookings, Me. */
+function LeafMini() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M4 16c0-7 4.5-11 12-12 0 7.5-4 12-11 12" fill="currentColor" opacity="0.25" />
+      <path d="M4 16c0-7 4.5-11 12-12 0 7.5-4 12-11 12M4 16l6-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * Phone navigation, a floating night pill: Home, List, Bookings, Me.
+ * The current tab grows into a light pill with its label; List is always
+ * the orange action button.
+ */
 export function BottomNav() {
   const pathname = usePathname().replace(/(.)\/$/, "$1");
   const pending = usePendingCount();
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
-      <ul className="flex">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 px-4 pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
+      <ul className="mx-auto flex h-[68px] max-w-md items-center justify-between rounded-full bg-night px-2.5 shadow-[0_12px_32px_-12px_rgba(21,23,28,0.55)]">
         {NAV.map(({ href, label, Icon, match }) => {
           const active = match(pathname);
           const badge = href === "/me" ? pending : 0;
+          const isList = href === "/list";
           return (
-            <li key={href} className="flex-1">
+            <li key={href} className={active ? "flex-[1.6]" : "flex-1"}>
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] ${active ? "font-semibold text-ink" : "font-medium text-muted"}`}
+                aria-label={label}
+                className="flex h-[68px] items-center justify-center"
               >
-                <span className="relative">
-                  <Icon size={23} />
+                <span
+                  className={`relative flex h-12 items-center justify-center gap-2 rounded-full transition-all duration-200 ${
+                    active
+                      ? "bg-white px-4 text-ink"
+                      : isList
+                        ? "w-12 bg-ember text-white"
+                        : "w-12 text-white/65"
+                  }`}
+                >
+                  <Icon size={22} />
+                  {active ? <span className="text-[13px] font-semibold">{label}</span> : null}
                   {badge ? (
-                    <span className="absolute -top-1 -right-2 flex size-4 items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white">
+                    <span className="absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-ember text-[10px] font-bold text-white ring-2 ring-night">
                       {badge}
                     </span>
                   ) : null}
                 </span>
-                {label}
                 {badge ? <span className="sr-only">, {badge} new requests</span> : null}
               </Link>
             </li>

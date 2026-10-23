@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ListingCard } from "@/components/Cards";
 import { BackIcon, CheckIcon, LockedChatIcon } from "@/components/Icons";
 import { useTrackRecord } from "@/components/People";
+import { artPhoto, coverPhoto } from "@/lib/photos";
 import { Avatar, BackButton, Badge, Empty, Page, Rating, SectionTitle } from "@/components/ui";
 import { distance, fmtDistance, timeAgo } from "@/lib/format";
 import { useStore } from "@/lib/store";
@@ -35,28 +36,35 @@ function PersonPageInner() {
 
   return (
     <Page>
-      <BackButton onClick={() => router.back()} />
-
-      <div className="mt-2 flex items-center gap-4">
-        <Avatar name={name} size={72} vendor={!!shop} />
-        <div className="min-w-0 flex-1">
-          <h1 className="text-[24px] leading-tight font-semibold tracking-[-0.02em]">{name}{self ? " (you)" : ""}</h1>
-          <p className="text-[14px] text-muted">
-            {person ? `${person.street} · ${person.phase}` : shop!.area}
-            {person && me && !self ? ` · ${fmtDistance(distance(me, person))} away` : ""}
-          </p>
-          <div className="mt-1.5 flex flex-wrap gap-1.5">
-            {person ? <Badge kind="verified" /> : <Badge kind={shop!.kind === "local" ? "local" : "outside"} />}
-          </div>
+      {/* Cover: their main listing photo, avatar overlapping */}
+      <div className="relative">
+        <div className="relative h-40 overflow-hidden rounded-[28px] bg-sun sm:h-48">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={(shares[0] && artPhoto(shares[0].art, 900, 400)) || coverPhoto()} alt="" className="absolute inset-0 size-full object-cover" />
+          <span className="absolute inset-0 bg-gradient-to-t from-night/45 to-transparent" />
+          <BackButton onClick={() => router.back()} className="absolute top-3 left-3" />
         </div>
+        <span className="absolute -bottom-10 left-4 rounded-full ring-[5px] ring-canvas">
+          <Avatar name={name} size={88} vendor={!!shop} />
+        </span>
+      </div>
+      <div className="mt-12 px-1">
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="font-display text-[22px] leading-tight font-semibold tracking-[-0.03em]">{name}{self ? " (you)" : ""}</h1>
+          {person ? <Badge kind="verified" /> : <Badge kind={shop!.kind === "local" ? "local" : "outside"} />}
+        </div>
+        <p className="mt-1 text-[13px] text-muted">
+          {person ? `${person.street} · ${person.phase}` : shop!.area}
+          {person && me && !self ? ` · ${fmtDistance(distance(me, person))} away` : ""}
+        </p>
       </div>
 
       {person?.bio ? <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{person.bio}</p> : null}
 
-      <dl className="mt-5 grid grid-cols-3 divide-x divide-line rounded-[12px] border border-line text-center">
+      <dl className="mt-5 grid grid-cols-3 gap-2 text-center [&>div]:rounded-[20px] [&>div]:bg-white">
         <div className="py-3"><dt className="text-[12px] text-muted">Rating</dt><dd className="mt-0.5 text-[17px] font-semibold"><Rating value={rating} /></dd></div>
-        <div className="py-3"><dt className="text-[12px] text-muted">{shop ? "Jobs" : "Loops done"}</dt><dd className="mt-0.5 text-[17px] font-semibold tabular-nums">{jobs}</dd></div>
-        <div className="py-3"><dt className="text-[12px] text-muted">{shop ? "Trading since" : "On the street since"}</dt><dd className="mt-0.5 text-[17px] font-semibold">{person?.since ?? shop!.since}</dd></div>
+        <div className="py-3"><dt className="text-[12px] text-muted">{shop ? "Jobs" : "Loops done"}</dt><dd className="mt-0.5 font-display text-[17px] font-semibold tracking-[-0.03em] tabular-nums">{jobs}</dd></div>
+        <div className="py-3"><dt className="text-[12px] text-muted">{shop ? "Trading since" : "On the street since"}</dt><dd className="mt-0.5 font-display text-[17px] font-semibold tracking-[-0.03em]">{person?.since ?? shop!.since}</dd></div>
       </dl>
 
       {shop ? (
@@ -83,7 +91,7 @@ function PersonPageInner() {
 
       <SectionTitle>Previous work</SectionTitle>
       {reviews.length ? (
-        <ul>
+        <ul className="rounded-[24px] bg-white px-4">
           {reviews.map((r) => (
             <li key={r.id} className="border-b border-line py-3 last:border-b-0">
               <div className="flex items-center justify-between gap-3 text-[13px]">

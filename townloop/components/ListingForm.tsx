@@ -61,7 +61,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
 
   return (
     <Page>
-      <h1 className="text-[24px] font-semibold tracking-[-0.02em]">{kind === "item" ? "Lend an item or space" : "Offer a service"}</h1>
+      <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">{kind === "item" ? "Lend an item or space" : "Offer a service"}</h1>
       <p className="mt-1 text-[14px] text-muted">
         Neighbours send a request first. You see their profile and choose who to chat with.
         {firstListing ? " Your first listing earns 100 points." : ""}
@@ -82,7 +82,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
                 key={c}
                 onClick={() => setCategory(c)}
                 aria-pressed={category === c}
-                className={`rounded-full border px-3.5 py-1.5 text-[13px] ${category === c ? "border-ink bg-ink font-medium text-white" : "border-line-strong hover:border-ink"}`}
+                className={`rounded-full border px-3.5 py-1.5 text-[13px] ${category === c ? "border-ember bg-ember font-medium text-white" : "border-transparent bg-white hover:bg-surface"}`}
               >
                 {c}
               </button>
@@ -113,7 +113,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
         {!free ? (
           <div className="grid grid-cols-2 gap-3">
             <TextField label="Price" error={errors.price}>
-              <span className={`flex h-12 items-center rounded-[10px] border px-3.5 focus-within:border-ink ${errors.price ? "border-[#B42318]" : "border-line-strong"}`}>
+              <span className={`flex h-12 items-center rounded-[14px] border bg-white px-3.5 focus-within:border-ink ${errors.price ? "border-[#B42318]" : "border-line-strong"}`}>
                 <span className="mr-1.5 text-muted">RM</span>
                 <input inputMode="decimal" value={price} onChange={(e) => { setPrice(e.target.value.replace(/[^\d.]/g, "")); setErrors((x) => ({ ...x, price: undefined })); }} placeholder="30" className="min-w-0 flex-1 bg-transparent text-[15px] outline-none" />
               </span>
@@ -128,7 +128,7 @@ export function ListingForm({ kind }: { kind: Kind }) {
 
         {kind === "item" ? (
           <TextField label="Refundable deposit" hint="Optional, held in escrow">
-            <span className="flex h-12 items-center rounded-[10px] border border-line-strong px-3.5 focus-within:border-ink">
+            <span className="flex h-12 items-center rounded-[14px] border border-line-strong bg-white px-3.5 focus-within:border-ink">
               <span className="mr-1.5 text-muted">RM</span>
               <input inputMode="decimal" value={deposit} onChange={(e) => setDeposit(e.target.value.replace(/[^\d.]/g, ""))} placeholder="50" className="min-w-0 flex-1 bg-transparent text-[15px] outline-none" />
             </span>

@@ -16,7 +16,7 @@ export function Logo({ href = "/", size = 30 }: { href?: string; size?: number }
   return (
     <Link href={href} aria-label="TownLoop home" className="flex items-center gap-2 text-ink">
       <Mark size={size} />
-      <span className="font-display text-[19px] font-semibold tracking-[-0.02em]">townloop</span>
+      <span className="font-display text-[18px] font-semibold tracking-[-0.03em]">townloop</span>
     </Link>
   );
 }

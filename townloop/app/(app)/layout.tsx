@@ -15,10 +15,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }, [ready, me, router]);
 
   return (
-    <>
+    <div className="min-h-dvh bg-canvas">
       <AppHeader />
       <main>{ready && me ? children : <div className="h-[60vh]" aria-busy="true" />}</main>
       <BottomNav />
-    </>
+    </div>
   );
 }

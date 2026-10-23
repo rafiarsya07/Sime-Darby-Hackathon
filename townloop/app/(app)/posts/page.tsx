@@ -29,10 +29,10 @@ export default function PostsPage() {
     <Page>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[24px] font-semibold tracking-[-0.02em]">Posts</h1>
+          <h1 className="font-display text-[24px] leading-[1.15] font-semibold tracking-[-0.035em]">Posts</h1>
           <p className="mt-1 text-[14px] text-muted">What neighbours are looking for. Have it? Request to chat.</p>
         </div>
-        <LinkButton href="/posts/new" size="sm" className="shrink-0">
+        <LinkButton href="/posts/new" size="sm" variant="accent" className="shrink-0">
           <AddIcon size={16} /> Post
         </LinkButton>
       </div>
@@ -43,7 +43,7 @@ export default function PostsPage() {
             key={f.id}
             onClick={() => setFilter(f.id)}
             aria-pressed={filter === f.id}
-            className={`rounded-full border px-3.5 py-1.5 text-[13px] ${filter === f.id ? "border-ink bg-ink font-medium text-white" : "border-line-strong hover:border-ink"}`}
+            className={`rounded-full border px-3.5 py-1.5 text-[13px] ${filter === f.id ? "border-ember bg-ember font-medium text-white" : "border-transparent bg-white hover:bg-surface"}`}
           >
             {f.label}
           </button>
