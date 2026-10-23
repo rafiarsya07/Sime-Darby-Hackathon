@@ -1,0 +1,101 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+import { ArtTile } from "@/components/Art";
+import { RequestCard, RespondSheet } from "@/components/People";
+import { BackIcon } from "@/components/Icons";
+import { Avatar, Badge, Button, Empty, Page, SectionTitle } from "@/components/ui";
+import { fmtDay, rm, timeAgo } from "@/lib/format";
+import { useStore } from "@/lib/store";
+
+const TIER_WORD = { rent: "Wants to borrow", gigs: "Needs help", vendors: "Looking for a vendor" } as const;
+
+function PostPageInner() {
+  const id = useSearchParams().get("id") ?? "";
+  const router = useRouter();
+  const { me, state, user } = useStore();
+  const [open, setOpen] = useState(false);
+  const p = state.posts.find((x) => x.id === id);
+
+  if (!p || !me) {
+    return (
+      <Page>
+        <Empty title="This post is gone">
+          <Link href="/posts" className="font-semibold text-ink underline">All posts</Link>
+        </Empty>
+      </Page>
+    );
+  }
+
+  const author = user(p.authorId);
+  const mine = p.authorId === me.id;
+  const replies = state.requests.filter((r) => r.postId === p.id);
+  const myReply = replies.find((r) => r.fromId === me.id);
+
+  return (
+    <Page>
+      <div className="flex h-11 items-center">
+        <button onClick={() => router.back()} aria-label="Back" className="-ml-2.5 flex size-11 items-center justify-center">
+          <BackIcon size={22} />
+        </button>
+      </div>
+
+      <div className="mt-2 flex gap-4">
+        <ArtTile art={p.art} size={64} />
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] text-muted">{TIER_WORD[p.tier]} · {timeAgo(p.createdAt)}</p>
+          <h1 className="mt-0.5 text-[22px] leading-tight font-semibold tracking-[-0.02em]">{p.title}</h1>
+        </div>
+      </div>
+
+      <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{p.details}</p>
+      <dl className="mt-4 text-[15px]">
+        <div className="flex justify-between border-y border-line py-3"><dt className="text-muted">When</dt><dd className="font-medium">{p.when}, from {fmtDay(p.from)}</dd></div>
+        <div className="flex justify-between border-b border-line py-3"><dt className="text-muted">Budget</dt><dd className="font-medium">{p.budget ? `Up to ${rm(p.budget)}` : "Hoping to borrow free"}</dd></div>
+      </dl>
+
+      <div className="mt-5 flex items-center gap-3">
+        <Avatar name={author?.name ?? "?"} />
+        <span className="flex-1">
+          <span className="flex items-center gap-2 text-[15px] font-semibold">{mine ? "You" : author?.name} <Badge kind="verified" /></span>
+          <span className="text-[13px] text-muted">{author?.street}</span>
+        </span>
+      </div>
+
+      {mine ? (
+        <>
+          <SectionTitle>{replies.length ? `Neighbours who can help (${replies.length})` : "No replies yet"}</SectionTitle>
+          {replies.length ? (
+            <>
+              <p className="text-[13px] text-muted">Look at their profile and what they share. Accepting opens WhatsApp with that person only.</p>
+              {replies.map((r) => <RequestCard key={r.id} r={r} />)}
+            </>
+          ) : (
+            <p className="text-[14px] text-muted">Neighbours who have it will request to chat. You&apos;ll see them on Me.</p>
+          )}
+        </>
+      ) : p.status !== "open" ? (
+        <p className="mt-6 text-[14px] text-muted">{author?.name} already found someone.</p>
+      ) : myReply ? (
+        <p className="mt-6 rounded-[10px] bg-surface px-4 py-3 text-[14px]">
+          You requested to chat. {author?.name} sees your profile and decides. {myReply.status === "accepted" ? "Accepted, check Bookings." : ""}
+        </p>
+      ) : (
+        <Button className="mt-6 w-full" onClick={() => setOpen(true)}>Request to chat</Button>
+      )}
+
+      <RespondSheet post={open ? p : null} open={open} onClose={() => setOpen(false)} />
+    </Page>
+  );
+}
+
+/** Static hosting friendly: the id comes from ?id= so every item works without a server. */
+export default function PostPage() {
+  return (
+    <Suspense fallback={null}>
+      <PostPageInner />
+    </Suspense>
+  );
+}

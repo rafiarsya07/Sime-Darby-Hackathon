@@ -1,0 +1,116 @@
+"use client";
+
+import Link from "next/link";
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ListingCard } from "@/components/Cards";
+import { BackIcon, CheckIcon, LockedChatIcon } from "@/components/Icons";
+import { useTrackRecord } from "@/components/People";
+import { Avatar, Badge, Empty, Page, Rating, SectionTitle } from "@/components/ui";
+import { distance, fmtDistance, timeAgo } from "@/lib/format";
+import { useStore } from "@/lib/store";
+
+function PersonPageInner() {
+  const id = useSearchParams().get("id") ?? "";
+  const router = useRouter();
+  const { me, user, vendor, nameOf } = useStore();
+  const person = user(id);
+  const shop = vendor(id);
+  const { reviews, avg, done, shares } = useTrackRecord(id);
+
+  if (!person && !shop) {
+    return (
+      <Page>
+        <Empty title="We couldn't find this person">
+          <Link href="/home" className="font-semibold text-ink underline">Back home</Link>
+        </Empty>
+      </Page>
+    );
+  }
+
+  const name = person?.name ?? shop!.name;
+  const rating = shop ? shop.rating : avg;
+  const jobs = shop ? shop.jobs : done;
+  const self = me?.id === id;
+
+  return (
+    <Page>
+      <div className="flex h-11 items-center">
+        <button onClick={() => router.back()} aria-label="Back" className="-ml-2.5 flex size-11 items-center justify-center">
+          <BackIcon size={22} />
+        </button>
+      </div>
+
+      <div className="mt-2 flex items-center gap-4">
+        <Avatar name={name} size={72} vendor={!!shop} />
+        <div className="min-w-0 flex-1">
+          <h1 className="text-[24px] leading-tight font-semibold tracking-[-0.02em]">{name}{self ? " (you)" : ""}</h1>
+          <p className="text-[14px] text-muted">
+            {person ? `${person.street} · ${person.phase}` : shop!.area}
+            {person && me && !self ? ` · ${fmtDistance(distance(me, person))} away` : ""}
+          </p>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {person ? <Badge kind="verified" /> : <Badge kind={shop!.kind === "local" ? "local" : "outside"} />}
+          </div>
+        </div>
+      </div>
+
+      {person?.bio ? <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{person.bio}</p> : null}
+
+      <dl className="mt-5 grid grid-cols-3 divide-x divide-line rounded-[12px] border border-line text-center">
+        <div className="py-3"><dt className="text-[12px] text-muted">Rating</dt><dd className="mt-0.5 text-[17px] font-semibold"><Rating value={rating} /></dd></div>
+        <div className="py-3"><dt className="text-[12px] text-muted">{shop ? "Jobs" : "Loops done"}</dt><dd className="mt-0.5 text-[17px] font-semibold tabular-nums">{jobs}</dd></div>
+        <div className="py-3"><dt className="text-[12px] text-muted">{shop ? "Trading since" : "On the street since"}</dt><dd className="mt-0.5 text-[17px] font-semibold">{person?.since ?? shop!.since}</dd></div>
+      </dl>
+
+      {shop ? (
+        <>
+          <SectionTitle>Checked by SDP</SectionTitle>
+          <ul className="space-y-1.5 text-[14px]">
+            {shop.checks.map((c) => (
+              <li key={c} className="flex items-center gap-2"><CheckIcon size={16} /> {c}</li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p className="mt-4 flex items-center gap-2 text-[13px] text-muted">
+          <LockedChatIcon size={18} /> {person?.tenure} verified with SDP PRIME. Phone number stays hidden until they accept a chat.
+        </p>
+      )}
+
+      <SectionTitle>{shop ? "Services" : "What they share"}</SectionTitle>
+      {shares.length ? (
+        <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3">{shares.map((l) => <ListingCard key={l.id} l={l} />)}</div>
+      ) : (
+        <p className="text-[14px] text-muted">Nothing listed yet.</p>
+      )}
+
+      <SectionTitle>Previous work</SectionTitle>
+      {reviews.length ? (
+        <ul>
+          {reviews.map((r) => (
+            <li key={r.id} className="border-b border-line py-3 last:border-b-0">
+              <div className="flex items-center justify-between gap-3 text-[13px]">
+                <span className="font-medium">{r.title}</span>
+                <Rating value={r.stars} />
+              </div>
+              <p className="mt-1 text-[14px] text-ink-2">{r.text}</p>
+              <p className="mt-1 text-[12px] text-muted">{nameOf(r.byId)} · {timeAgo(r.at)}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-[14px] text-muted">No reviews yet.</p>
+      )}
+    </Page>
+  );
+}
+
+/** Static hosting friendly: the id comes from ?id= so every item works without a server. */
+export default function PersonPage() {
+  return (
+    <Suspense fallback={null}>
+      <PersonPageInner />
+    </Suspense>
+  );
+}

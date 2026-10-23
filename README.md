@@ -6,6 +6,10 @@ TownLoop lets verified residents of a township lend tools, share spaces and find
 
 A student concept for the Sime Darby Property University Hackathon 2026 (Township of Tomorrow).
 
+* **Live demo:** https://rafiarsya07.github.io/Sime-Darby-Hackathon/demo/
+* **Design preview:** https://rafiarsya07.github.io/Sime-Darby-Hackathon/
+* **App source:** [`townloop/`](townloop) (Next.js 16, React 19, Tailwind CSS 4)
+
 ![App screens overview](design/00-app-screens-overview.png)
 
 ## How it works

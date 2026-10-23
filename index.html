@@ -45,6 +45,10 @@
     font-size: clamp(44px, 8.4vw, 124px); line-height: .96; letter-spacing: -.045em;
   }
   h1 em { font-style: normal; color: var(--orange); }
+  .cta { display: inline-flex; align-items: center; gap: 10px; margin-top: clamp(24px, 3vw, 40px); height: 52px; padding: 0 24px; border-radius: 10px; background: var(--ink); color: #fff; font-size: 16px; font-weight: 600; }
+  .cta:hover { background: #333; }
+  .cta svg { width: 18px; height: 18px; }
+  .top nav a.live { color: var(--ink); font-weight: 600; }
 
   .stage { background: var(--stage); }
   .stage .wrap { padding-top: clamp(16px, 3vw, 40px); padding-bottom: clamp(16px, 3vw, 40px); }
@@ -136,11 +140,15 @@
     <a href="#app">App</a>
     <a href="#website">Website</a>
     <a href="#brand">Brand</a>
+    <a class="live" href="demo/">Live demo</a>
   </nav>
 </div>
 
 <header class="wrap hero">
   <h1>Borrow from next door, <em>not from a store.</em></h1>
+  <a class="cta" href="demo/">Try the live demo
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
 </header>
 
 <div class="stage rv">
